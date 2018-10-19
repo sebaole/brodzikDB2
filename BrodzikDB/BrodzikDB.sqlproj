@@ -104,8 +104,19 @@
     <Build Include="Schemas\dbo\Tables\tblUserNotification.sql" />
     <Build Include="Schemas\dbo\Tables\tblUser.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspAddUser.sql" />
-    <Build Include="Schemas\dbo\Stored Procedures\uspLogin.sql" />
     <Build Include="Schemas\dbo\Tables\tblPhoneNoConfiramtionSMSCode.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspAddShoppingCartItem.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspAddOrder.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspAddProduct.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspTemplate.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspAddOrderHistoryStatus.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetProducts.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetShoppingCartItems.sql" />
+    <Build Include="Schemas\log\Tables\tblLogSMS.sql" />
+    <Build Include="Schemas\dbo\Tables\tblSessions.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspAddSMSPhoneNoAuthorizaztion.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspCheckSession.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspLoginUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />

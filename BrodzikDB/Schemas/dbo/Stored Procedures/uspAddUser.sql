@@ -12,6 +12,8 @@
 	,@CompanyName			NVARCHAR(256) = NULL
 	,@NIP					NCHAR(10) = NULL
 	,@IsDeliveryActive		BIT = NULL
+	,@IsGDPRAccepted		BIT = NULL
+	,@IsMarketingAccepted	BIT = NULL
 	,@UserID				INT OUTPUT
 )
 AS
@@ -54,6 +56,8 @@ BEGIN
 				,[CompanyName]     
 				,[NIP]             
 				,[IsDeliveryActive]
+				,[IsGDPRAccepted]
+				,[IsMarketingAccepted]
 			)
 			VALUES
 			(        
@@ -69,6 +73,8 @@ BEGIN
 				,@CompanyName    
 				,@NIP     
 				,@IsDeliveryActive
+				,@IsGDPRAccepted
+				,@IsMarketingAccepted
 			)
 
 			SET @UserID = SCOPE_IDENTITY()

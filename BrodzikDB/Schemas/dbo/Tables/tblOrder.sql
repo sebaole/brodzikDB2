@@ -2,7 +2,7 @@
 (
 	[OrderID]                INT IDENTITY (1, 1) NOT NULL ,
 	[UserID]                 INT NOT NULL ,
-	[OrderNr]                NVARCHAR(16) NOT NULL ,
+	[OrderNr]                NVARCHAR(16) NOT NULL , -- UQ INDEX !!!!!
 	[OrderDate]              DATETIME NOT NULL  DEFAULT GETDATE(),
 	[DeliveryDate]           DATETIME NOT NULL ,
 	[IsSelfPickup]           BIT NOT NULL ,

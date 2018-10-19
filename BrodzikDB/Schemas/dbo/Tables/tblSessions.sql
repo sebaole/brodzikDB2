@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[tblSessions]
+(
+	ID_SES		NVARCHAR(200) NOT NULL,
+	Login		NVARCHAR(50) NOT NULL,
+	DateStart	DATETIME NOT NULL,
+	LastUpdate	DATETIME NOT NULL,
+	Active		BIT NOT NULL
+)
+GO
