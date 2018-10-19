@@ -10,17 +10,18 @@ VALUES
 
 INSERT INTO [dict].[tblOrderStatus]
 (
-	 [StatusCode]         
+	 [OrderStatusID]
+	,[StatusCode]         
 	,[Description]        
 	,[IsNotificationSMS]  
 	,[IsNotificationEmail]
 )
 VALUES
-	 ('START'		,'Przyjęte do realizacji'	,1	,0)
-	,('DELIVERY'	,'W trakcie dostawy'		,1	,0)
-	,('READY'		,'Gotowe do odbioru'		,1	,0)
-	,('CANCEL'		,'Anulowane'				,1	,0)
-	,('DONE'		,'Zrealizowane'				,0	,0)
+	 (1		,'START'		,'Przyjęte do realizacji'	,1	,0)
+	,(2		,'DELIVERY'		,'W trakcie dostawy'		,1	,0)
+	,(3		,'READY'		,'Gotowe do odbioru'		,1	,0)
+	,(4		,'CANCEL'		,'Anulowane'				,1	,0)
+	,(5		,'DONE'			,'Zrealizowane'				,0	,0)
 
 
 

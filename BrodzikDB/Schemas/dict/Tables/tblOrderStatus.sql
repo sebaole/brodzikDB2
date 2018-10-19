@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dict].[tblOrderStatus]
 (
-	[OrderStatusID]       TINYINT IDENTITY (1, 1) NOT NULL ,
+	[OrderStatusID]       TINYINT NOT NULL ,
 	[StatusCode]          NVARCHAR(16) NOT NULL ,
 	[Description]         NVARCHAR(32) NOT NULL ,
 	[IsNotificationSMS]   BIT NOT NULL ,
