@@ -12,8 +12,8 @@
 	,@CompanyName			NVARCHAR(256) = NULL
 	,@NIP					NCHAR(10) = NULL
 	,@IsDeliveryActive		BIT = NULL
-	,@IsGDPRAccepted		BIT = NULL
-	,@IsMarketingAccepted	BIT = NULL
+	,@IsGDPRAccepted		BIT = 0
+	,@IsMarketingAccepted	BIT = 0
 	,@UserID				INT OUTPUT
 )
 AS

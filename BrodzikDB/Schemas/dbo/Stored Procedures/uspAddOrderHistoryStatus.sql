@@ -2,7 +2,7 @@
 (
 	 @OrderID				INT 
 	,@StatusCode			NVARCHAR(16)
-	,@ReasonDisapproved		NVARCHAR(256)
+	,@ReasonDisapproved		NVARCHAR(256) = NULL
 )
 AS
 
