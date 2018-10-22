@@ -117,6 +117,9 @@
     <Build Include="Schemas\dbo\Stored Procedures\uspAddSMSPhoneNoAuthorizaztion.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspCheckSession.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspLoginUser.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspSetNewPassword.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetSalt.sql" />
+    <Build Include="Schemas\log\Stored Procedures\uspAddSMSLog.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />

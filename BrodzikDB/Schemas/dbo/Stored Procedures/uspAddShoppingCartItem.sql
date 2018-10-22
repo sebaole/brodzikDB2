@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[uspAddShoppingCartItem]
 (
-	 @UserID		INT
+	 @LoginName		NCHAR(9)
 	,@ProductID		INT
 	,@Quantity		TINYINT
 
@@ -15,6 +15,9 @@ BEGIN
 
 	DECLARE 
 		@ReturnValue	SMALLINT = 0
+		,@UserID		INT
+
+	SET @UserID = (SELECT UserID FROM dbo.tblUser WHERE LoginName = @LoginName)
 
 	BEGIN TRY
 
@@ -77,16 +80,7 @@ BEGIN
 		IF @@TRANCOUNT > 0 ROLLBACK TRAN
   
 		/* raise an error */
-		DECLARE
-			 @ErrorMessage	NVARCHAR(4000)
-			,@ErrorSeverity	INT
-			,@ErrorState	INT
-
-		SET @ErrorMessage	= ERROR_MESSAGE()
-		SET @ErrorSeverity	= ERROR_SEVERITY()
-		SET @ErrorState		= ERROR_STATE()
-
-		RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState)
+		;THROW
 
 	END CATCH
 

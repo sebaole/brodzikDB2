@@ -1,6 +1,8 @@
-﻿CREATE PROCEDURE [dbo].[uspGetShoppingCartItems]
+﻿CREATE PROCEDURE [dbo].[uspSetNewPassword]
 (
-	 @LoginName	NCHAR(9)
+	 @LoginName				NCHAR(9)
+	,@PasswordHash			NVARCHAR(128)
+	,@PasswordSalt			NVARCHAR(128)
 )
 AS
 
@@ -10,9 +12,6 @@ BEGIN
 
 	DECLARE 
 		@ReturnValue	SMALLINT = 0
-		,@UserID		INT
-
-	SET @UserID = (SELECT UserID FROM dbo.tblUser WHERE LoginName = @LoginName)
 
 	BEGIN TRY
 
@@ -21,13 +20,16 @@ BEGIN
 		BEGIN TRAN
 					
 			/* target sql statements here */
-			SELECT
-				 ProductID
-				,Quantity
-			FROM dbo.tblShoppingCart
-			WHERE	
-				UserID = @UserID
-				AND DateExpired >= GETDATE()
+			UPDATE dbo.tblUser
+			SET
+				PasswordHash = @PasswordHash
+				,PasswordSalt = @PasswordSalt
+			WHERE LoginName = @LoginName
+
+			IF @@ROWCOUNT = 0
+			BEGIN
+				RAISERROR('Invalid LoginName' ,16 ,1)
+			END
 		
 		COMMIT
 

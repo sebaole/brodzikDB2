@@ -12,8 +12,7 @@
 	,@DeliveryNumberLine2   NVARCHAR(16) = NULL
 
 	,@OrderID               INT OUT
-	,@OrderNr               NVARCHAR(16) OUT
-	,@OrderHistoryID		INT OUT
+	,@OrderNr               NVARCHAR(16) OUT -- it should be the only return value ?
 )
 AS
 
@@ -22,7 +21,7 @@ BEGIN
 	SET	XACT_ABORT, NOCOUNT ON
 
 	DECLARE 
-		@ReturnValue		SMALLINT = 0
+		@ReturnValue	SMALLINT = 0
 		,@OrderCount	INT = 0
 
 	BEGIN TRY
@@ -153,22 +152,12 @@ BEGIN
 
 		SET @OrderID = NULL       
 		SET @OrderNr = NULL       
-		SET @OrderHistoryID = NULL
 		SET @ReturnValue = -1
 
 		IF @@TRANCOUNT > 0 ROLLBACK TRAN
   
 		/* raise an error */
-		DECLARE
-			 @ErrorMessage	NVARCHAR(4000)
-			,@ErrorSeverity	INT
-			,@ErrorState	INT
-
-		SET @ErrorMessage	= ERROR_MESSAGE()
-		SET @ErrorSeverity	= ERROR_SEVERITY()
-		SET @ErrorState		= ERROR_STATE()
-
-		RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState)
+		;THROW
 
 	END CATCH
 
