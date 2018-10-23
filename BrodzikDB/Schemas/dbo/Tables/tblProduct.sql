@@ -26,3 +26,21 @@ CREATE TABLE [dbo].[tblProduct]
 
 );
 GO
+
+CREATE TRIGGER [dbo].[trgProduct] ON [dbo].[tblProduct]
+AFTER UPDATE
+
+AS
+
+BEGIN
+	SET	NOCOUNT ON
+
+    UPDATE	X
+    SET
+         LastUpdated = GETDATE()
+		--,ModUser = SYSTEM_USER
+	FROM [dbo].[tblProduct] X
+	INNER JOIN inserted I
+		ON	I.[ProductID] = X.[ProductID]
+END
+GO

@@ -48,50 +48,76 @@ BEGIN
 			END
 		
 		BEGIN TRAN
-					
 			/* target sql statements here */
-			INSERT INTO dbo.tblProduct
-			(
-				 [CategoryID]			
-				,[ProductName]			
-				,[ShortDescription]		
-				,[LongDescription]		
-				,[Ingredients]			
-				,[Weight]				
-				,[UnitOfWeight]			
-				,[UnitRetailPrice]		
-				,[UnitWholesalePrice]	
-				,[VATID]				
-				,[IsMonday]				
-				,[IsTuesday]			
-				,[IsWednesday]			
-				,[IsThursday]			
-				,[IsFriday]				
-				,[IsSaturday]			
-				,[IsSunday]				
-			)
-			VALUES
-			(
-				 @CategoryID			
-				,@ProductName			
-				,@ShortDescription		
-				,@LongDescription		
-				,@Ingredients			
-				,@Weight				
-				,@UnitOfWeight			
-				,@UnitRetailPrice		
-				,@UnitWholesalePrice	
-				,@VATID				
-				,@IsMonday				
-				,@IsTuesday			
-				,@IsWednesday			
-				,@IsThursday			
-				,@IsFriday				
-				,@IsSaturday			
-				,@IsSunday				
-			)
 
-			SET @ProductID = SCOPE_IDENTITY()
+			IF @ProductID IS NULL
+				BEGIN
+					INSERT INTO dbo.tblProduct
+					(
+						 [CategoryID]			
+						,[ProductName]			
+						,[ShortDescription]		
+						,[LongDescription]		
+						,[Ingredients]			
+						,[Weight]				
+						,[UnitOfWeight]			
+						,[UnitRetailPrice]		
+						,[UnitWholesalePrice]	
+						,[VATID]				
+						,[IsMonday]				
+						,[IsTuesday]			
+						,[IsWednesday]			
+						,[IsThursday]			
+						,[IsFriday]				
+						,[IsSaturday]			
+						,[IsSunday]				
+					)
+					VALUES
+					(
+						 @CategoryID			
+						,@ProductName			
+						,@ShortDescription		
+						,@LongDescription		
+						,@Ingredients			
+						,@Weight				
+						,@UnitOfWeight			
+						,@UnitRetailPrice		
+						,@UnitWholesalePrice	
+						,@VATID				
+						,@IsMonday				
+						,@IsTuesday			
+						,@IsWednesday			
+						,@IsThursday			
+						,@IsFriday				
+						,@IsSaturday			
+						,@IsSunday				
+					)
+
+					SET @ProductID = SCOPE_IDENTITY()
+				END
+			ELSE
+				BEGIN
+					UPDATE dbo.tblProduct
+					SET
+						 [CategoryID] =  @CategoryID
+						,[ProductName] = @ProductName
+						,[ShortDescription] = @ShortDescription
+						,[LongDescription] = @LongDescription
+						,[Ingredients] = @Ingredients
+						,[Weight] = @Weight
+						,[UnitOfWeight] = @UnitOfWeight
+						,[UnitRetailPrice] = @UnitRetailPrice
+						,[UnitWholesalePrice] = @UnitWholesalePrice
+						,[VATID] = @VATID
+						,[IsMonday] = @IsMonday
+						,[IsTuesday] = @IsTuesday
+						,[IsWednesday] = @IsWednesday
+						,[IsThursday] = @IsThursday
+						,[IsFriday] = @IsFriday
+						,[IsSaturday] = @IsSaturday
+						,[IsSunday] = @IsSunday
+					WHERE ProductID = @ProductID
+				END
 		
 		COMMIT
 
