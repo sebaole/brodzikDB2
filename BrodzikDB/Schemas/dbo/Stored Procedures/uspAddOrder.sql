@@ -235,17 +235,18 @@ BEGIN
 			SET @OrderID = SCOPE_IDENTITY()
 
 			/* populate tblOrderItem from tblShoppingCart */ 
-			;WITH CTE_ShoppingCart AS
-			(
-				SELECT
-					UserID
-					,ProductID
-					,Quantity
-				FROM dbo.tblShoppingCart
-				WHERE 
-					UserID = @UserID
-					AND DateExpired >= GETDATE()
-			)
+			IF OBJECT_ID('tempdb..#tempShoppingCart') IS NOT NULL DROP TABLE #tempShoppingCart
+			
+			SELECT
+				ShoppingCartID
+				,UserID
+				,ProductID
+				,Quantity
+			INTO #tempShoppingCart
+			FROM dbo.tblShoppingCart
+			WHERE 
+				UserID = @UserID
+				AND DateExpired >= GETDATE()
 
 			INSERT INTO dbo.tblOrderItem
 			(
@@ -267,7 +268,7 @@ BEGIN
 				,V.VATRate
 				,NULL
 				,NULL
-			FROM CTE_ShoppingCart SC
+			FROM #tempShoppingCart SC
 			INNER JOIN dbo.tblProduct P
 				ON SC.ProductID = P.ProductID
 			INNER JOIN dict.tblVATRate V
@@ -281,7 +282,10 @@ BEGIN
 			END
 
 			/* delete item(s) from tblShoppingCart */ 
-			DELETE FROM CTE_ShoppingCart
+			DELETE SC
+			FROM dbo.tblShoppingCart SC
+			INNER JOIN #tempShoppingCart tSC
+				ON SC.ShoppingCartID = tSC.ShoppingCartID
 
 			/* populate tblOrderHistory */ 
 			EXEC [dbo].[uspAddOrderHistoryStatus] @OrderID = @OrderID, @StatusCode = 'START'
