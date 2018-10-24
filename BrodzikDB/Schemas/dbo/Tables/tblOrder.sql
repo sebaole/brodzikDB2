@@ -2,7 +2,7 @@
 (
 	[OrderID]                INT IDENTITY (1, 1) NOT NULL ,
 	[UserID]                 INT NOT NULL ,
-	[OrderNr]                NVARCHAR(16) NOT NULL , -- UQ INDEX !!!!!
+	[OrderNr]                NVARCHAR(16) NOT NULL ,
 	[OrderDate]              DATETIME NOT NULL  DEFAULT GETDATE(),
 	[DeliveryDate]           DATETIME NOT NULL ,
 	[IsSelfPickup]           BIT NOT NULL ,
@@ -17,8 +17,9 @@
 	[DeliveryZipCode]        NVARCHAR(6) NULL ,
 	[DeliveryStreet]         NVARCHAR(128) NULL ,
 	[DeliveryNumberLine1]    NVARCHAR(16) NULL ,
-	[DeliveryNumberLine2]    NVARCHAR(16) NULL ,
+	[DeliveryNumberLine2]    NVARCHAR(16) NULL
 	
-	CONSTRAINT [PK_tblOrder] PRIMARY KEY CLUSTERED ([OrderID] ASC)
+	,CONSTRAINT [PK_tblOrder] PRIMARY KEY CLUSTERED ([OrderID] ASC)
+	,CONSTRAINT [UQ_tblOrder_OrderNr] UNIQUE ([OrderNr])
 );
 GO

@@ -19,7 +19,7 @@ CREATE TABLE [dbo].[tblProduct]
 	,[IsFriday]				BIT NOT NULL 
 	,[IsSaturday]			BIT NOT NULL 
 	,[IsSunday]				BIT NOT NULL
-	,[IsActive]				BIT NOT NULL DEFAULT(1)
+	,[IsActive]				BIT NOT NULL
 	,[DateCreated]			DATETIME NOT NULL  DEFAULT GETDATE()
 	,[LastUpdated]			DATETIME NULL 
 	,CONSTRAINT [PK_tblProduct] PRIMARY KEY CLUSTERED ([ProductID] ASC)

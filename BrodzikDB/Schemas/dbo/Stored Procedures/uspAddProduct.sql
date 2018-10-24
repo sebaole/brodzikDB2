@@ -17,6 +17,7 @@
 	,@IsFriday				BIT 
 	,@IsSaturday			BIT 
 	,@IsSunday				BIT
+	,@IsActive				BIT = 1
 	,@ProductID				INT OUTPUT
 )
 AS
@@ -70,7 +71,8 @@ BEGIN
 						,[IsThursday]			
 						,[IsFriday]				
 						,[IsSaturday]			
-						,[IsSunday]				
+						,[IsSunday]		
+						,[IsActive]
 					)
 					VALUES
 					(
@@ -90,7 +92,8 @@ BEGIN
 						,@IsThursday			
 						,@IsFriday				
 						,@IsSaturday			
-						,@IsSunday				
+						,@IsSunday	
+						,@IsActive
 					)
 
 					SET @ProductID = SCOPE_IDENTITY()
@@ -116,6 +119,7 @@ BEGIN
 						,[IsFriday] = @IsFriday
 						,[IsSaturday] = @IsSaturday
 						,[IsSunday] = @IsSunday
+						,[IsActive] = @IsActive
 					WHERE ProductID = @ProductID
 				END
 		

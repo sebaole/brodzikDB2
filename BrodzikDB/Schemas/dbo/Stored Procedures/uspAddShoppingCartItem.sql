@@ -1,11 +1,10 @@
 ﻿CREATE PROCEDURE [dbo].[uspAddShoppingCartItem]
 (
-	 @LoginName		NCHAR(9)
-	,@ProductID		INT
-	,@Quantity		TINYINT
-
+	 @LoginName			NCHAR(9)
+	,@ProductID			INT
+	,@Quantity			TINYINT
 	--> price should be getting from target table at the moment product is added to the shopping cart and store in this table???
-
+	
 )
 AS
 
@@ -69,7 +68,7 @@ BEGIN
 						,DATEADD(SECOND, -1,CAST(DATEADD(DAY, 1, CAST(GETDATE() AS DATE)) AS DATETIME)) -- end of day
 					)
 				END
-		
+
 		COMMIT
 
 	END TRY

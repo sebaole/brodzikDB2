@@ -21,14 +21,35 @@ BEGIN
 		BEGIN TRAN
 					
 			/* target sql statements here */
+			;WITH CTE AS
+			(
+			SELECT
+				 SC.ProductID
+				,SC.Quantity
+				,P.ProductName
+				,[UnitPrice] = IIF(U.IsBusinessClient = 1, P.UnitWholesalePrice, P.UnitRetailPrice)
+				,V.VATRate
+			FROM dbo.tblShoppingCart SC
+			INNER JOIN dbo.tblProduct P
+				ON SC.ProductID = P.ProductID
+			INNER JOIN dbo.tblUser U
+				ON SC.UserID = U.UserID
+			INNER JOIN dict.tblVATRate V
+				ON P.VATID = V.VATID
+			WHERE	
+				SC.UserID = @UserID
+				AND SC.DateExpired >= GETDATE()
+			)
+
 			SELECT
 				 ProductID
+				,ProductName
 				,Quantity
-			FROM dbo.tblShoppingCart
-			WHERE	
-				UserID = @UserID
-				AND DateExpired >= GETDATE()
-		
+				,UnitPrice
+				,VATRate
+				,[GrossPrice] = VATRate * [UnitPrice]
+			FROM CTE 
+
 		COMMIT
 
 	END TRY

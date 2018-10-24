@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[uspAddOrderHistoryStatus]
 (
-	 @OrderID				INT 
+	 @OrderID				INT -- change into @OrderNr?
 	,@StatusCode			NVARCHAR(16)
 	,@ReasonDisapproved		NVARCHAR(256) = NULL
 )

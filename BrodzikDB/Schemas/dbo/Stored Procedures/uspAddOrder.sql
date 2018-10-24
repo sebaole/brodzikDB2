@@ -1,18 +1,19 @@
 ﻿CREATE PROCEDURE [dbo].[uspAddOrder]
 (	
-	 @UserID                INT	
-	,@DeliveryDate          DATETIME
-	,@IsSelfPickup          BIT
-	,@CustomerNote          NVARCHAR(256) = NULL
-	,@DeliveryCity          NVARCHAR(64) = NULL
-	,@DeliveryState         NVARCHAR(64) = NULL
-	,@DeliveryZipCode       NVARCHAR(6) = NULL
-	,@DeliveryStreet        NVARCHAR(128) = NULL
-	,@DeliveryNumberLine1   NVARCHAR(16) = NULL
-	,@DeliveryNumberLine2   NVARCHAR(16) = NULL
-
-	,@OrderID               INT OUT
-	,@OrderNr               NVARCHAR(16) OUT -- it should be the only return value ?
+	 @LoginName					NCHAR(9)
+	,@DeliveryDate				DATETIME
+	,@IsSelfPickup				BIT
+	,@CustomerNote				NVARCHAR(256) = NULL
+	,@DeliveryCity				NVARCHAR(64) = NULL
+	,@DeliveryState				NVARCHAR(64) = NULL
+	,@DeliveryZipCode			NVARCHAR(6) = NULL
+	,@DeliveryStreet			NVARCHAR(128) = NULL
+	,@DeliveryNumberLine1		NVARCHAR(16) = NULL
+	,@DeliveryNumberLine2		NVARCHAR(16) = NULL
+	,@TotalPrice				MONEY
+	,@TotalPriceWithDiscount	MONEY
+	,@OrderID					INT OUT
+	,@OrderNr					NVARCHAR(16) OUT
 )
 AS
 
@@ -23,6 +24,10 @@ BEGIN
 	DECLARE 
 		@ReturnValue	SMALLINT = 0
 		,@OrderCount	INT = 0
+		,@UserID		INT
+		,@DeliveryDay	TINYINT
+
+	SET @UserID = (SELECT UserID FROM dbo.tblUser WHERE LoginName = @LoginName)
 
 	BEGIN TRY
 
@@ -31,10 +36,10 @@ BEGIN
 							FROM dbo.tblOrder WITH(NOLOCK)
 							WHERE 
 								OrderDate >= CAST(GETDATE() AS DATE) 
-								AND OrderDate < DATEADD(DAY, 1, CAST(GETDATE() AS DATE)) 
+								AND OrderDate < CAST(DATEADD(DAY, 1, GETDATE()) AS DATE)
 							)
 
-		SET @OrderNr = (SELECT CONCAT(YEAR(GETDATE()), MONTH(GETDATE()), DAY(GETDATE()), '_', FORMAT(@OrderCount + 1, '000') ))
+		SET @OrderNr = (SELECT CONCAT(YEAR(GETDATE()), MONTH(GETDATE()), DAY(GETDATE()), '_', FORMAT(@OrderCount + 1, '0000') ))
 
 		/* some extra validations here */
 
@@ -49,9 +54,146 @@ BEGIN
 				RAISERROR ('ShoppingCart has expired. There is no item(s) inside.', 16, 1)
 			END
 
-		-- check availability (days) vs DeliveryDate ?
-
+		-- check address params are provided when IsSelfPickup = 0
+		IF @IsSelfPickup = 0 
+			AND (
+					@DeliveryCity IS NULL		
+					OR @DeliveryState IS NULL		
+					OR @DeliveryZipCode IS NULL	
+					OR @DeliveryStreet IS NULL	
+					OR @DeliveryNumberLine1 IS NULL
+					OR @DeliveryNumberLine2 IS NULL
+				)
+			BEGIN
+				RAISERROR ('Not all address data has been entered.', 16, 1)
+			END
 		
+		IF TRY_CAST(@DeliveryDate AS DATE) IS NULL
+			BEGIN
+				RAISERROR ('Something wrong with delivery data.', 16, 1)
+			END
+
+		-- check delivery date, min. 2 days after today
+		IF CAST(@DeliveryDate AS DATE) < DATEADD(DAY, 2, CAST(GETDATE() AS DATE))
+			BEGIN
+				RAISERROR ('Delivery date must be at least 2 day(s) after today.', 16, 1)
+			END
+
+		/******************************************************************************************/
+		-- check products days availability
+		/******************************************************************************************/
+		SET DATEFIRST  1;
+		SET @DeliveryDay = (SELECT DATEPART(WEEKDAY, @DeliveryDate))
+
+		IF @DeliveryDay = 1
+			BEGIN
+				IF EXISTS (SELECT 1
+							FROM dbo.tblShoppingCart SC
+							INNER JOIN dbo.tblProduct P
+								ON SC.ProductID = P.ProductID
+								AND P.IsMonday = 0
+							WHERE 
+								UserID = @UserID
+								AND DateExpired >= GETDATE()
+							)
+							BEGIN
+								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+							END
+			END
+		ELSE IF @DeliveryDay = 2
+			BEGIN
+				IF EXISTS (SELECT 1
+							FROM dbo.tblShoppingCart SC
+							INNER JOIN dbo.tblProduct P
+								ON SC.ProductID = P.ProductID
+								AND P.IsTuesday = 0
+							WHERE 
+								UserID = @UserID
+								AND DateExpired >= GETDATE()
+							)
+							BEGIN
+								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+							END
+			END
+		ELSE IF @DeliveryDay = 3
+			BEGIN
+				IF EXISTS (SELECT 1
+							FROM dbo.tblShoppingCart SC
+							INNER JOIN dbo.tblProduct P
+								ON SC.ProductID = P.ProductID
+								AND P.IsWednesday = 0
+							WHERE 
+								UserID = @UserID
+								AND DateExpired >= GETDATE()
+							)
+							BEGIN
+								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+							END
+			END
+		ELSE IF @DeliveryDay = 4
+			BEGIN
+				IF EXISTS (SELECT 1
+							FROM dbo.tblShoppingCart SC
+							INNER JOIN dbo.tblProduct P
+								ON SC.ProductID = P.ProductID
+								AND P.IsThursday = 0
+							WHERE 
+								UserID = @UserID
+								AND DateExpired >= GETDATE()
+							)
+							BEGIN
+								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+							END
+			END
+		ELSE IF @DeliveryDay = 5
+			BEGIN
+				IF EXISTS (SELECT 1
+							FROM dbo.tblShoppingCart SC
+							INNER JOIN dbo.tblProduct P
+								ON SC.ProductID = P.ProductID
+								AND P.IsFriday = 0
+							WHERE 
+								UserID = @UserID
+								AND DateExpired >= GETDATE()
+							)
+							BEGIN
+								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+							END
+			END
+		ELSE IF @DeliveryDay = 6
+			BEGIN
+				IF EXISTS (SELECT 1
+							FROM dbo.tblShoppingCart SC
+							INNER JOIN dbo.tblProduct P
+								ON SC.ProductID = P.ProductID
+								AND P.IsSaturday = 0
+							WHERE 
+								UserID = @UserID
+								AND DateExpired >= GETDATE()
+							)
+							BEGIN
+								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+							END
+			END
+		ELSE IF @DeliveryDay = 7
+			BEGIN
+				IF EXISTS (SELECT 1
+							FROM dbo.tblShoppingCart SC
+							INNER JOIN dbo.tblProduct P
+								ON SC.ProductID = P.ProductID
+								AND P.IsSunday = 0
+							WHERE 
+								UserID = @UserID
+								AND DateExpired >= GETDATE()
+							)
+							BEGIN
+								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+							END
+			END
+		/******************************************************************************************/
+		-- end products days availability validation
+		/******************************************************************************************/
+
 		BEGIN TRAN
 					
 			/* target sql statements here */
@@ -79,8 +221,8 @@ BEGIN
 				,@OrderNr
 				,@DeliveryDate
 				,@IsSelfPickup
-				,0 -- to consider should it be passing by params or getting from db? 
-				,0 -- to consider should it be passing by params or getting from db? 
+				,@TotalPrice 
+				,@TotalPriceWithDiscount
 				,@CustomerNote
 				,@DeliveryCity
 				,@DeliveryState
