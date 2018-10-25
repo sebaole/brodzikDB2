@@ -121,6 +121,7 @@
     <Build Include="Schemas\dbo\Stored Procedures\uspGetSalt.sql" />
     <Build Include="Schemas\log\Stored Procedures\uspAddSMSLog.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspGetShoppingCartItemsCount.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetUserDetails.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />

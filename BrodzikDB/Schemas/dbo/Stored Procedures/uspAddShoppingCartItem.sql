@@ -15,12 +15,20 @@ BEGIN
 	DECLARE 
 		@ReturnValue	SMALLINT = 0
 		,@UserID		INT
+		,@ProductName	NVARCHAR(128)
 
 	SET @UserID = (SELECT UserID FROM dbo.tblUser WHERE LoginName = @LoginName)
 
 	BEGIN TRY
 
 		/* some extra validations here */
+
+		--check if IsActive
+		SET @ProductName = (SELECT ProductName FROM dbo.tblProduct WHERE ProductID = @ProductID AND IsActive = 1)
+		IF @ProductName IS NULL
+		BEGIN
+			RAISERROR ('Sorry, product %s is no longer available.', 16, 1, @ProductName)
+		END
 		
 		BEGIN TRAN
 					

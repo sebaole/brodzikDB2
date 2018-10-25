@@ -1,20 +1,22 @@
 ﻿CREATE PROCEDURE [dbo].[uspAddUser]
 (
-	 @UserRoleName			NVARCHAR(16) 
-	,@LoginName				NCHAR(9)
-	,@PasswordHash			NVARCHAR(128)
-	,@PasswordSalt			NVARCHAR(128)
-	,@PhoneNumber			NCHAR(9)
-	,@Email					NVARCHAR(256) = NULL
-	,@FirstName				NVARCHAR(150) = NULL
-	,@LastName				NVARCHAR(150) = NULL
-	,@IsBusinessClient		BIT
-	,@CompanyName			NVARCHAR(256) = NULL
-	,@NIP					NCHAR(10) = NULL
-	,@IsDeliveryActive		BIT = NULL
-	,@IsGDPRAccepted		BIT = 0
-	,@IsMarketingAccepted	BIT = 0
-	,@UserID				INT OUTPUT
+	 @UserRoleName				NVARCHAR(16) 
+	,@LoginName					NCHAR(9)
+	,@PasswordHash				NVARCHAR(128)
+	,@PasswordSalt				NVARCHAR(128)
+	,@PhoneNumber				NCHAR(9)
+	,@Email						NVARCHAR(256) = NULL
+	,@FirstName					NVARCHAR(150) = NULL
+	,@LastName					NVARCHAR(150) = NULL
+	,@IsBusinessClient			BIT
+	,@CompanyName				NVARCHAR(256) = NULL
+	,@NIP						NCHAR(10) = NULL
+	,@IsDeliveryActive			BIT = 0
+	,@IsWholesalePriceActive	BIT = 0
+	,@IsGDPRAccepted			BIT = 0
+	,@IsMarketingAccepted		BIT = 0
+	,@IsActive					BIT = 1
+	,@UserID					INT OUTPUT
 )
 AS
 
@@ -41,44 +43,69 @@ BEGIN
 			END
 		
 		BEGIN TRAN
-					
-			INSERT INTO dbo.tblUser
-			(
-				 [UserRoleID]      
-				,[LoginName]       
-				,[PasswordHash]    
-				,[PasswordSalt]    
-				,[PhoneNumber]     
-				,[Email]           
-				,[FirstName]       
-				,[LastName]        
-				,[IsBusinessClient]
-				,[CompanyName]     
-				,[NIP]             
-				,[IsDeliveryActive]
-				,[IsGDPRAccepted]
-				,[IsMarketingAccepted]
-			)
-			VALUES
-			(        
-				 @UserRoleID      
-				,@LoginName      
-				,@PasswordHash    
-				,@PasswordSalt    
-				,@PhoneNumber     
-				,@Email           
-				,@FirstName    
-				,@LastName        
-				,@IsBusinessClient
-				,@CompanyName    
-				,@NIP     
-				,@IsDeliveryActive
-				,@IsGDPRAccepted
-				,@IsMarketingAccepted
-			)
+			
+			IF @UserID IS NULL
+				BEGIN
+				INSERT INTO dbo.tblUser
+				(
+					 [UserRoleID]      
+					,[LoginName]       
+					,[PasswordHash]    
+					,[PasswordSalt]    
+					,[PhoneNumber]     
+					,[Email]           
+					,[FirstName]       
+					,[LastName]        
+					,[IsBusinessClient]
+					,[CompanyName]     
+					,[NIP]             
+					,[IsDeliveryActive]
+					,[IsWholesalePriceActive]
+					,[IsGDPRAccepted]
+					,[IsMarketingAccepted]
+					,[IsActive]
+				)
+				VALUES
+				(        
+					 @UserRoleID      
+					,@LoginName      
+					,@PasswordHash    
+					,@PasswordSalt    
+					,@PhoneNumber     
+					,@Email           
+					,@FirstName    
+					,@LastName        
+					,@IsBusinessClient
+					,@CompanyName    
+					,@NIP     
+					,@IsDeliveryActive
+					,@IsWholesalePriceActive
+					,@IsGDPRAccepted
+					,@IsMarketingAccepted
+					,@IsActive
+				)
 
-			SET @UserID = SCOPE_IDENTITY()
-		
+				SET @UserID = SCOPE_IDENTITY()
+				END
+			ELSE
+				BEGIN
+					UPDATE dbo.tblUser
+					SET
+						 [UserRoleID] = @UserRoleID												
+						,[PhoneNumber] = @PhoneNumber
+						,[Email] = @Email					
+						,[FirstName] = @FirstName				
+						,[LastName] = @LastName	
+						,[IsBusinessClient] = @IsBusinessClient	
+						,[CompanyName] = @CompanyName				
+						,[NIP] = @NIP						
+						,[IsWholesalePriceActive] = @IsWholesalePriceActive	
+						,[IsDeliveryActive] = @IsDeliveryActive
+						,[IsGDPRAccepted] = @IsGDPRAccepted	
+						,[IsMarketingAccepted] = @IsMarketingAccepted
+						,[IsActive] = @IsActive
+					WHERE UserID = @UserID AND LoginName = @LoginName -- double check
+				END
 		COMMIT
 
 	END TRY
