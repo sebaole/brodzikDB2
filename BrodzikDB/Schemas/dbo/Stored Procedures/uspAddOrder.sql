@@ -264,7 +264,7 @@ BEGIN
 				,SC.ProductID
 				,P.ProductName
 				,SC.Quantity
-				,[UnitPrice] = IIF(U.IsBusinessClient = 0, P.UnitRetailPrice, P.UnitWholesalePrice)
+				,[UnitPrice] = IIF(U.IsWholesalePriceActive = 0, P.UnitRetailPrice, P.UnitWholesalePrice)
 				,V.VATRate
 				,NULL
 				,NULL

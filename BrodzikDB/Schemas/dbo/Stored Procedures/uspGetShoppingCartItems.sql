@@ -27,7 +27,7 @@ BEGIN
 				 SC.ProductID
 				,SC.Quantity
 				,P.ProductName
-				,[UnitPrice] = IIF(U.IsBusinessClient = 1, P.UnitWholesalePrice, P.UnitRetailPrice)
+				,[UnitPrice] = IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice)
 				,V.VATRate
 			FROM dbo.tblShoppingCart SC
 			INNER JOIN dbo.tblProduct P
