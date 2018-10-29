@@ -4,6 +4,7 @@
 	,[UserID]			INT NOT NULL
 	,[ProductID]		INT NOT NULL
 	,[Quantity]			TINYINT NOT NULL CHECK([Quantity] > 0)
+	,[DeliveryDate]		DATETIME NOT NULL
 	,[DateCreated]		DATETIME NOT NULL DEFAULT(GETDATE())
 	,[ShortDateCreated]	AS CAST([DateCreated] AS DATE) PERSISTED
 	,[DateExpired]		DATETIME NOT NULL
@@ -12,7 +13,7 @@
 );
 GO
 
-CREATE UNIQUE INDEX UIX_tblShoppingCart ON [dbo].[tblShoppingCart]([UserID],[ProductID],[ShortDateCreated])
+CREATE UNIQUE INDEX UIX_tblShoppingCart ON [dbo].[tblShoppingCart]([UserID],[ProductID],[ShortDateCreated],[DeliveryDate])
 
 GO
 

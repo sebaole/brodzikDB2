@@ -48,10 +48,11 @@ BEGIN
 						FROM dbo.tblShoppingCart 
 						WHERE 
 							UserID = @UserID
+							AND DeliveryDate = @DeliveryDate
 							AND DateExpired >= GETDATE()
 						)
 			BEGIN
-				RAISERROR ('ShoppingCart has expired. There is no item(s) inside.', 16, 1)
+				RAISERROR ('ShoppingCart on the selected delivery date has expired. There is no item(s) inside.', 16, 1)
 			END
 
 		-- check address params are provided when IsSelfPickup = 0
@@ -70,7 +71,7 @@ BEGIN
 		
 		IF TRY_CAST(@DeliveryDate AS DATE) IS NULL
 			BEGIN
-				RAISERROR ('Something wrong with delivery data.', 16, 1)
+				RAISERROR ('Something wrong with delivery date.', 16, 1)
 			END
 
 		-- check delivery date, min. 2 days after today
@@ -90,14 +91,15 @@ BEGIN
 				IF EXISTS (SELECT 1
 							FROM dbo.tblShoppingCart SC
 							INNER JOIN dbo.tblProduct P
-								ON SC.ProductID = P.ProductID
+								ON SC.ProductID = P.ProductID							
 								AND P.IsMonday = 0
 							WHERE 
-								UserID = @UserID
-								AND DateExpired >= GETDATE()
+								SC.UserID = @UserID
+								AND SC.DateExpired >= GETDATE()
+								AND SC.DeliveryDate = @DeliveryDate
 							)
 							BEGIN
-								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
 							END
 			END
 		ELSE IF @DeliveryDay = 2
@@ -108,11 +110,12 @@ BEGIN
 								ON SC.ProductID = P.ProductID
 								AND P.IsTuesday = 0
 							WHERE 
-								UserID = @UserID
-								AND DateExpired >= GETDATE()
+								SC.UserID = @UserID
+								AND SC.DateExpired >= GETDATE()
+								AND SC.DeliveryDate = @DeliveryDate
 							)
 							BEGIN
-								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
 							END
 			END
 		ELSE IF @DeliveryDay = 3
@@ -123,11 +126,12 @@ BEGIN
 								ON SC.ProductID = P.ProductID
 								AND P.IsWednesday = 0
 							WHERE 
-								UserID = @UserID
-								AND DateExpired >= GETDATE()
+								SC.UserID = @UserID
+								AND SC.DateExpired >= GETDATE()
+								AND SC.DeliveryDate = @DeliveryDate
 							)
 							BEGIN
-								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
 							END
 			END
 		ELSE IF @DeliveryDay = 4
@@ -138,11 +142,12 @@ BEGIN
 								ON SC.ProductID = P.ProductID
 								AND P.IsThursday = 0
 							WHERE 
-								UserID = @UserID
-								AND DateExpired >= GETDATE()
+								SC.UserID = @UserID
+								AND SC.DateExpired >= GETDATE()
+								AND SC.DeliveryDate = @DeliveryDate
 							)
 							BEGIN
-								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
 							END
 			END
 		ELSE IF @DeliveryDay = 5
@@ -153,11 +158,12 @@ BEGIN
 								ON SC.ProductID = P.ProductID
 								AND P.IsFriday = 0
 							WHERE 
-								UserID = @UserID
-								AND DateExpired >= GETDATE()
+								SC.UserID = @UserID
+								AND SC.DateExpired >= GETDATE()
+								AND SC.DeliveryDate = @DeliveryDate
 							)
 							BEGIN
-								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
 							END
 			END
 		ELSE IF @DeliveryDay = 6
@@ -168,11 +174,12 @@ BEGIN
 								ON SC.ProductID = P.ProductID
 								AND P.IsSaturday = 0
 							WHERE 
-								UserID = @UserID
-								AND DateExpired >= GETDATE()
+								SC.UserID = @UserID
+								AND SC.DateExpired >= GETDATE()
+								AND SC.DeliveryDate = @DeliveryDate
 							)
 							BEGIN
-								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
 							END
 			END
 		ELSE IF @DeliveryDay = 7
@@ -183,11 +190,12 @@ BEGIN
 								ON SC.ProductID = P.ProductID
 								AND P.IsSunday = 0
 							WHERE 
-								UserID = @UserID
-								AND DateExpired >= GETDATE()
+								SC.UserID = @UserID
+								AND SC.DateExpired >= GETDATE()
+								AND SC.DeliveryDate = @DeliveryDate
 							)
 							BEGIN
-								RAISERROR ('One of your product is not available for delivery date you have chosen.', 16, 1)
+								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
 							END
 			END
 		/******************************************************************************************/
@@ -246,6 +254,7 @@ BEGIN
 			FROM dbo.tblShoppingCart
 			WHERE 
 				UserID = @UserID
+				AND DeliveryDate = @DeliveryDate
 				AND DateExpired >= GETDATE()
 
 			INSERT INTO dbo.tblOrderItem

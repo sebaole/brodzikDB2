@@ -29,6 +29,7 @@ BEGIN
 				,P.ProductName
 				,[UnitPrice] = IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice)
 				,V.VATRate
+				,SC.DeliveryDate
 			FROM dbo.tblShoppingCart SC
 			INNER JOIN dbo.tblProduct P
 				ON SC.ProductID = P.ProductID
@@ -49,6 +50,7 @@ BEGIN
 				,UnitPrice
 				,VATRate
 				,[GrossPrice] = ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2)
+				,DeliveryDate
 			FROM CTE 
 
 		COMMIT
