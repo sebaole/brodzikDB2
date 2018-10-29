@@ -1,6 +1,6 @@
-﻿CREATE PROCEDURE [dbo].[uspGetShoppingCartItems]
+﻿CREATE PROCEDURE [dbo].[uspGetShoppingCartSummary]
 (
-	 @LoginName	NCHAR(9)
+	  @LoginName			NCHAR(9)
 )
 AS
 
@@ -21,14 +21,9 @@ BEGIN
 		BEGIN TRAN
 					
 			/* target sql statements here */
-			;WITH CTE AS
-			(
-			SELECT
-				 SC.ProductID
-				,SC.Quantity
-				,P.ProductName
-				,[UnitPrice] = IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice)
-				,V.VATRate
+			SELECT 
+				[ItemsCount] = COUNT(*)
+				,[TotalValue] = SUM(SC.Quantity * ROUND(IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice) * (1 + V.VATRate),2) )
 			FROM dbo.tblShoppingCart SC
 			INNER JOIN dbo.tblProduct P
 				ON SC.ProductID = P.ProductID
@@ -40,22 +35,12 @@ BEGIN
 			WHERE	
 				SC.UserID = @UserID
 				AND SC.DateExpired >= GETDATE()
-			)
-
-			SELECT
-				 ProductID
-				,ProductName
-				,Quantity
-				,UnitPrice
-				,VATRate
-				,[GrossPrice] = ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2)
-			FROM CTE 
 
 		COMMIT
 
 	END TRY
 	BEGIN CATCH
-
+		
 		SET @ReturnValue = -1
 
 		IF @@TRANCOUNT > 0 ROLLBACK TRAN

@@ -25,14 +25,19 @@ BEGIN
 	SET	XACT_ABORT, NOCOUNT ON
 
 	DECLARE 
-		@UserRoleID		TINYINT
-		,@ReturnValue	SMALLINT = 0
+		@UserRoleID				TINYINT
+		,@ReturnValue			SMALLINT = 0
 
 	BEGIN TRY
 
-		IF EXISTS (SELECT 1 FROM dbo.tblUser WHERE LoginName = @LoginName)
+		IF EXISTS (SELECT 1 FROM dbo.tblUser WHERE LoginName = @LoginName) AND @UserID IS NULL -- do not check if update is calling
 			BEGIN
 				RAISERROR ('The LoginName already exists. Please use a different LoginName', 16, 1)
+			END
+
+		IF @UserID IS NOT NULL AND (NOT EXISTS (SELECT 1 FROM dbo.tblUser WHERE UserID = @UserID) OR (SELECT LoginName FROM dbo.tblUser WHERE UserID = @UserID) <> @LoginName)
+			BEGIN
+				RAISERROR ('The LoginName does not match UserID', 16, 1)
 			END
 		
 		SET @UserRoleID	= (SELECT UserRoleID FROM dict.tblUserRole WHERE UserRoleName = @UserRoleName)
