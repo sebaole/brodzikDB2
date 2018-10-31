@@ -52,6 +52,7 @@ BEGIN
 				,[GrossPrice] = ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2)
 				,DeliveryDate
 			FROM CTE 
+			WHERE Quantity > 0
 
 		COMMIT
 
