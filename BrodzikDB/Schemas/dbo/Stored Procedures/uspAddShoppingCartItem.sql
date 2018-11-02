@@ -30,7 +30,7 @@ BEGIN
 		SET @ProductName = (SELECT ProductName FROM dbo.tblProduct WHERE ProductID = @ProductID AND IsActive = 1)
 		IF @ProductName IS NULL AND NOT (@IsUpdateOrDelete = 1 AND @Quantity = 0) -- do not check if DELETE is expected (Quantity = 0)
 		BEGIN
-			RAISERROR ('Sorry, product %s is no longer available.', 16, 1, @ProductName)
+			RAISERROR ('Sorry, product %s is no longer available.', 16, 1, @ProductName) -- change because it's NULL name
 		END
 
 		IF TRY_CAST(@DeliveryDate AS DATE) IS NULL
