@@ -3,6 +3,7 @@
 	 @CategoryName		NVARCHAR(64) = NULL
 	,@IncludeInactive	BIT = 1
 	,@LoginName			NCHAR(9) = NULL
+	,@DeliveryDate		DATETIME = NULL
 )
 AS
 
@@ -19,7 +20,21 @@ BEGIN
 	BEGIN TRY
 
 		/* some extra validations here */
-		
+		IF NOT EXISTS (SELECT 1 FROM dict.tblProductCategory WHERE CategoryName = @CategoryName) AND @CategoryName IS NOT NULL
+			BEGIN
+				RAISERROR('The CategoryName %s does not exist', 16, 1, @CategoryName)
+			END
+
+		IF NOT EXISTS (SELECT 1 FROM dbo.tblUser WHERE LoginName = @LoginName) AND @LoginName IS NOT NULL
+			BEGIN
+				RAISERROR('The LoginName %s does not exist', 16, 1, @LoginName)
+			END
+
+		IF TRY_CAST(@DeliveryDate AS DATE) IS NULL AND @DeliveryDate IS NOT NULL
+			BEGIN
+				RAISERROR ('Something wrong with delivery date', 16, 1)
+			END
+
 		BEGIN TRAN
 					
 			/* target sql statements here */
@@ -27,12 +42,12 @@ BEGIN
 			(
 			SELECT
 				ProductID
-				--,DeliveryDate
 				,[QuantityInCart] = SUM(Quantity)
 			FROM dbo.tblShoppingCart
 			WHERE 
 				UserID = @UserID
 				AND DateExpired >= GETDATE()
+				AND (DeliveryDate = @DeliveryDate OR @DeliveryDate IS NULL)
 			GROUP BY ProductID
 			)
 
