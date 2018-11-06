@@ -297,7 +297,7 @@ BEGIN
 				ON SC.ShoppingCartID = tSC.ShoppingCartID
 
 			/* populate tblOrderHistory */ 
-			EXEC [dbo].[uspAddOrderHistoryStatus] @OrderID = @OrderID, @StatusCode = 'START'
+			EXEC [dbo].[uspAddOrderHistoryStatus] @OrderID = @OrderID, @StatusCode = 'NEW'
 
 
 		COMMIT

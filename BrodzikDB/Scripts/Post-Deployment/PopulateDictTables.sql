@@ -17,12 +17,12 @@ INSERT INTO [dict].[tblOrderStatus]
 	,[IsNotificationEmail]
 )
 VALUES
-	 (1		,'START'		,'Przyjęte do realizacji'	,1	,0)
-	,(2		,'DELIVERY'		,'W trakcie dostawy'		,1	,0)
-	,(3		,'READY'		,'Gotowe do odbioru'		,1	,0)
-	,(4		,'CANCEL'		,'Anulowane'				,1	,0)
-	,(5		,'DONE'			,'Zrealizowane'				,0	,0)
-
+	 (1		,'NEW'				,'Przyjęte do weryfikacji'	,1	,0)
+	,(2		,'INPROGRESS'		,'W trakcie realizacji'		,1	,0)
+	,(3		,'INDELIVERY'		,'W trakcie dostawy'		,1	,0)
+	,(4		,'READY2PICKUP'		,'Gotowe do odbioru'		,1	,0)
+	,(5		,'REJECTED'			,'Odrzucone'				,1	,0)
+	,(6		,'DONE'				,'Zrealizowane'				,0	,0)
 
 
 SET IDENTITY_INSERT [dict].[tblVATRate] ON

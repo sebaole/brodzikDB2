@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[uspGetShoppingCartSummary]
 (
-	  @LoginName			NCHAR(9)
+	  @LoginName		NCHAR(9)
+	 ,@DeliveryDate		DATETIME = NULL
 )
 AS
 
@@ -35,6 +36,7 @@ BEGIN
 			WHERE	
 				SC.UserID = @UserID
 				AND SC.DateExpired >= GETDATE()
+				AND (SC.DeliveryDate = @DeliveryDate OR @DeliveryDate IS NULL)
 
 		COMMIT
 

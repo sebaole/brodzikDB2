@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[uspGetShoppingCartItems]
 (
-	 @LoginName	NCHAR(9)
+	  @LoginName		NCHAR(9)
+	 ,@DeliveryDate		DATETIME = NULL
 )
 AS
 
@@ -30,10 +31,13 @@ BEGIN
 				,[UnitPrice] = IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice)
 				,V.VATRate
 				,SC.DeliveryDate
+				,PC.CategoryName
 			FROM dbo.tblShoppingCart SC
 			INNER JOIN dbo.tblProduct P
 				ON SC.ProductID = P.ProductID
 				AND P.IsActive = 1 -- return only available products
+			INNER JOIN dict.tblProductCategory PC
+				ON P.CategoryID = PC.CategoryID
 			INNER JOIN dbo.tblUser U
 				ON SC.UserID = U.UserID
 			INNER JOIN dict.tblVATRate V
@@ -41,6 +45,7 @@ BEGIN
 			WHERE	
 				SC.UserID = @UserID
 				AND SC.DateExpired >= GETDATE()
+				AND (SC.DeliveryDate = @DeliveryDate OR @DeliveryDate IS NULL)
 			)
 
 			SELECT
@@ -51,6 +56,7 @@ BEGIN
 				,VATRate
 				,[GrossPrice] = ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2)
 				,DeliveryDate
+				,CategoryName
 			FROM CTE 
 			WHERE Quantity > 0 -- safe check
 

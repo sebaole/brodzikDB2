@@ -1,7 +1,6 @@
-﻿CREATE PROCEDURE [dbo].[uspGetShoppingCartItemsCount]
+﻿CREATE PROCEDURE [dbo].[uspGetShoppingCartDeliveryDates]
 (
 	  @LoginName			NCHAR(9)
-	 ,@ItemsInCartCount		INT OUT
 )
 AS
 
@@ -22,20 +21,18 @@ BEGIN
 		BEGIN TRAN
 					
 			/* target sql statements here */
-			SET @ItemsInCartCount = (
-					SELECT COUNT(*)
-					FROM dbo.tblShoppingCart
-					WHERE	
-						UserID = @UserID
-						AND DateExpired >= GETDATE()
-					)
+			SELECT DISTINCT 
+				[DeliveryDate] = DeliveryDate -- CAST(DeliveryDate AS DATE)
+			FROM dbo.tblShoppingCart SC
+			WHERE	
+				SC.UserID = @UserID
+				AND SC.DateExpired >= GETDATE()
 
 		COMMIT
 
 	END TRY
 	BEGIN CATCH
 		
-		SET @ItemsInCartCount = NULL
 		SET @ReturnValue = -1
 
 		IF @@TRANCOUNT > 0 ROLLBACK TRAN

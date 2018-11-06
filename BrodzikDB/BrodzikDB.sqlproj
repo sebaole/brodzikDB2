@@ -120,9 +120,11 @@
     <Build Include="Schemas\dbo\Stored Procedures\uspSetNewPassword.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspGetSalt.sql" />
     <Build Include="Schemas\log\Stored Procedures\uspAddSMSLog.sql" />
-    <Build Include="Schemas\dbo\Stored Procedures\uspGetShoppingCartItemsCount.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspGetUserDetails.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspGetShoppingCartSummary.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetShoppingCartDeliveryDates.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetOrders.sql" />
+    <Build Include="Schemas\dict\Views\vwOrderLatestStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />
