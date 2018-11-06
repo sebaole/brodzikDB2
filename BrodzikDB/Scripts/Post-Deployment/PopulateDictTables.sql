@@ -44,7 +44,7 @@ INSERT [dict].[tblProductCategory]
 	[CategoryID], [CategoryName], [Description]
 ) 
 VALUES 
-	 (1		, N'Chelb'		, N'')
+	 (1		, N'Chleb'		, N'')
 	,(2		, N'Pasta'		, N'')
 	,(3		, N'Torba'		, N'')
 	,(4		, N'Makaron'	, N'')
