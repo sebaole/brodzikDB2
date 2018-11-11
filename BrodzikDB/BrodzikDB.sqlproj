@@ -124,7 +124,10 @@
     <Build Include="Schemas\dbo\Stored Procedures\uspGetShoppingCartSummary.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspGetShoppingCartDeliveryDates.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspGetOrders.sql" />
-    <Build Include="Schemas\dict\Views\vwOrderLatestStatus.sql" />
+    <Build Include="Schemas\dbo\Views\vwOrderLatestStatus.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetOrderDetails.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetProductDetails.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetOrderItems.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />

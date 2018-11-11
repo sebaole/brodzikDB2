@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[uspGetOrders]
 (
 	@LoginName			NCHAR(9) = NULL
+	,@ClientName		NVARCHAR(300) = NULL
 	,@OrderDateFrom		DATETIME = NULL
 	,@OrderDateTo		DATETIME = NULL
 	,@DeliveryDateFrom	DATETIME = NULL
@@ -21,7 +22,7 @@ BEGIN
 	BEGIN TRY
 
 		/* some extra validations here */
-		IF NOT EXISTS (SELECT 1 FROM dict.tblOrderStatus WHERE StatusCode = @OrderStatusCode)
+		IF NOT EXISTS (SELECT 1 FROM dict.tblOrderStatus WHERE StatusCode = @OrderStatusCode) AND @OrderStatusCode IS NOT NULL
 			BEGIN
 				RAISERROR ('Incorrect value for @OrderStatusCode = %s', 16, 1, @OrderStatusCode)
 			END
@@ -29,15 +30,15 @@ BEGIN
 		BEGIN TRAN
 
 			/* target sql statements here */
-			;WITH CTE_OrderItems AS
-			(
-			SELECT
-				OrderID
-				,[OrderItemsDistinct] = COUNT(*)
-				,[OrderItemsTotal] = SUM(Quantity)
-			FROM dbo.tblOrderItem
-			GROUP BY OrderID
-			)
+			--;WITH CTE_OrderItems AS
+			--(
+			--SELECT
+			--	OrderID
+			--	,[OrderItemsDistinct] = COUNT(*)
+			--	,[OrderItemsTotal] = SUM(Quantity)
+			--FROM dbo.tblOrderItem
+			--GROUP BY OrderID
+			--)
 
 			SELECT 
 				O.OrderID
@@ -47,22 +48,15 @@ BEGIN
 				,O.DeliveryDate
 				,[OrderStatus] = OS.StatusCode
 				,[OrderStatusDesc] = OS.Description
-				,U.LastName
-				,U.FirstName
-				,U.CompanyName
 				,U.IsBusinessClient
-				,O.TotalPrice
-				,O.TotalPriceWithDiscount
-				,OI.OrderItemsDistinct
-				,OI.OrderItemsTotal
-				-- ???
+				,[ClientName] = IIF(U.IsBusinessClient = 1, U.CompanyName, CONCAT(U.LastName,' ',U.FirstName))
+				,[TotalPrice] = O.TotalPriceWithDiscount
+				,O.IsInvoiced
 			FROM dbo.tblOrder O
 			LEFT JOIN dbo.vwOrderLatestStatus OS
 				ON O.OrderID = OS.OrderID
 			INNER JOIN dbo.tblUser U
 				ON O.UserID = U.UserID
-			LEFT JOIN CTE_OrderItems OI
-				ON O.OrderID = OI.OrderID
 			WHERE 
 				(U.LoginName = @LoginName OR @LoginName IS NULL)
 				AND (OS.StatusCode = @OrderStatusCode OR @OrderStatusCode IS NULL)
@@ -72,6 +66,7 @@ BEGIN
 				AND (O.OrderDate < DATEADD(DAY, 1 , CAST(@OrderDateTo AS DATE)) OR @OrderDateTo IS NULL)
 				AND (O.OrderID = @OrderID OR @OrderID IS NULL)
 				AND (O.OrderNr = @OrderNr OR @OrderNr IS NULL)
+				AND (U.CompanyName LIKE '%' + @ClientName + '%' OR U.LastName LIKE '%' + @ClientName + '%' OR U.FirstName LIKE '%' + @ClientName + '%' OR @ClientName IS NULL)
 		
 		COMMIT
 
