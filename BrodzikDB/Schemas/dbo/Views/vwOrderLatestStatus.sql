@@ -6,7 +6,8 @@ AS
 		 OrderID
 		,OrderStatusID
 		,DateCreated
-		,[RN] = ROW_NUMBER() OVER(PARTITION BY OrderID ORDER BY OrderHistoryID ASC)
+		,ReasonDisapproved
+		,[RN] = ROW_NUMBER() OVER(PARTITION BY OrderID ORDER BY OrderHistoryID DESC)
 	FROM dbo.tblOrderHistory
 	)
 
@@ -16,6 +17,7 @@ AS
 		,S.StatusCode
 		,S.Description
 		,H.DateCreated
+		,H.ReasonDisapproved
 	FROM CTE H
 	INNER JOIN dict.tblOrderStatus S
 		ON H.OrderStatusID = S.OrderStatusID

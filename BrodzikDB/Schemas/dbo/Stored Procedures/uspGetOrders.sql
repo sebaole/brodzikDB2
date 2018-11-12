@@ -30,16 +30,6 @@ BEGIN
 		BEGIN TRAN
 
 			/* target sql statements here */
-			--;WITH CTE_OrderItems AS
-			--(
-			--SELECT
-			--	OrderID
-			--	,[OrderItemsDistinct] = COUNT(*)
-			--	,[OrderItemsTotal] = SUM(Quantity)
-			--FROM dbo.tblOrderItem
-			--GROUP BY OrderID
-			--)
-
 			SELECT 
 				O.OrderID
 				,O.OrderNr
@@ -50,8 +40,19 @@ BEGIN
 				,[OrderStatusDesc] = OS.Description
 				,U.IsBusinessClient
 				,[ClientName] = IIF(U.IsBusinessClient = 1, U.CompanyName, CONCAT(U.LastName,' ',U.FirstName))
+				,U.NIP
 				,[TotalPrice] = O.TotalPriceWithDiscount
 				,O.IsInvoiced
+				,O.DateInvoiced
+				,O.DeliveryState
+				,O.DeliveryCity
+				,O.DeliveryZipCode	
+				,O.DeliveryStreet
+				,O.DeliveryNumberLine1
+				,O.DeliveryNumberLine2
+				,O.CustomerNote
+				,OS.ReasonDisapproved
+				,U.PhoneNumber
 			FROM dbo.tblOrder O
 			LEFT JOIN dbo.vwOrderLatestStatus OS
 				ON O.OrderID = OS.OrderID
@@ -67,7 +68,8 @@ BEGIN
 				AND (O.OrderID = @OrderID OR @OrderID IS NULL)
 				AND (O.OrderNr = @OrderNr OR @OrderNr IS NULL)
 				AND (U.CompanyName LIKE '%' + @ClientName + '%' OR U.LastName LIKE '%' + @ClientName + '%' OR U.FirstName LIKE '%' + @ClientName + '%' OR @ClientName IS NULL)
-		
+			ORDER BY O.OrderID DESC
+
 		COMMIT
 
 	END TRY

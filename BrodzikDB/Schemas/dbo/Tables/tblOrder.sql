@@ -9,7 +9,7 @@
 	[TotalPrice]             MONEY NOT NULL ,
 	[TotalPriceWithDiscount] MONEY NOT NULL ,
 	[CustomerNote]           NVARCHAR(256) NULL ,
-	[ReasonDisapproved]      NVARCHAR(256) NULL ,
+	--[ReasonDisapproved]      NVARCHAR(256) NULL ,
 	[IsInvoiced]             BIT NULL ,
 	[DateInvoiced]           DATETIME NULL ,
 	[DeliveryCity]           NVARCHAR(64) NULL ,

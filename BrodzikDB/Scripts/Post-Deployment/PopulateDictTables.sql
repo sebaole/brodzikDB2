@@ -23,7 +23,7 @@ VALUES
 	,(3		,'INDELIVERY'		,'W trakcie dostawy'		,1	,0	,3)
 	,(4		,'READY2PICKUP'		,'Gotowe do odbioru'		,1	,0	,4)
 	,(5		,'REJECTED'			,'Odrzucone'				,1	,0	,5)
-	,(6		,'DONE'				,'Zrealizowane'				,0	,0	,6)
+	,(6		,'DONE'				,'Zrealizowane'				,1	,0	,6)
 
 
 SET IDENTITY_INSERT [dict].[tblVATRate] ON

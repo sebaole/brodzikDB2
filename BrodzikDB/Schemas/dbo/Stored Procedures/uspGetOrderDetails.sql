@@ -29,6 +29,7 @@ BEGIN
 				,O.IsSelfPickup
 				,O.DeliveryDate
 				,O.CustomerNote
+				,O.IsInvoiced
 				,O.DateInvoiced
 				,O.DeliveryState
 				,O.DeliveryCity
@@ -36,9 +37,13 @@ BEGIN
 				,O.DeliveryStreet
 				,O.DeliveryNumberLine1
 				,O.DeliveryNumberLine2
+				,[OrderStatus] = OS.StatusCode
+				,[OrderStatusDesc] = OS.Description
 			FROM dbo.tblOrder O
 			INNER JOIN dbo.tblUser U
 				ON O.UserID = U.UserID
+			LEFT JOIN dbo.vwOrderLatestStatus OS
+				ON O.OrderID = OS.OrderID
 			WHERE 
 				O.OrderNr = @OrderNr
 		
