@@ -35,7 +35,7 @@ BEGIN
 				ON O.OrderID = LS.OrderID
 				AND LS.StatusCode NOT IN ('REJECTED')
 				--AND LS.IsToDo = 1
-			WHERE O.OrderDate = @DeliveryDate
+			WHERE O.DeliveryDate = @DeliveryDate
 			GROUP BY 
 				O.DeliveryDate
 				,OI.ProductName
