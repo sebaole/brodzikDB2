@@ -10,7 +10,7 @@
 	,@ContactPersonFirstName NVARCHAR(150) = NULL
 	,@ContactPersonLastName  NVARCHAR(150) = NULL
 	,@ContactPhoneNumber     NVARCHAR(32) = NULL
-	,@IsMainAddress          BIT = 0
+	,@IsMainAddress          BIT = 1
 	,@IsActive				 BIT = 1
 	,@AddressID				 INT = NULL
 )
@@ -40,12 +40,12 @@ BEGIN
 		BEGIN
 			RAISERROR('AddressID does not match LoginName you passed', 16, 1)
 		END
-		
+
 		BEGIN TRAN
 					
 			/* target sql statements here */
 
-			--if new main adress is passed then update existing one 
+			--if new main adress is passed then update existing ones
 			IF @IsMainAddress = 1
 			BEGIN
 				UPDATE dbo.tblAddress
