@@ -12,7 +12,6 @@
 	,@ContactPhoneNumber     NVARCHAR(32) = NULL
 	,@IsMainAddress          BIT = 0
 	,@IsActive				 BIT = 1
-	,@IsUpdate				 BIT = 0
 	,@AddressID				 INT = NULL
 )
 AS
@@ -22,22 +21,24 @@ BEGIN
 	SET	XACT_ABORT, NOCOUNT ON
 
 	DECLARE 
-		@ReturnValue	SMALLINT = 0
-		,@UserID		INT
+		@ReturnValue		SMALLINT = 0
+		,@UserID			INT
+		,@UserIDAddressID	INT
 
 	SET @UserID = (SELECT UserID FROM dbo.tblUser WHERE LoginName = @LoginName)
+	SET @UserIDAddressID = (SELECT UserID FROM dbo.tblAddress WHERE AddressID = @AddressID)
 
 	BEGIN TRY
 
 		/* some extra validations here */
-		IF @IsUpdate = 1 AND @AddressID IS NULL
+		IF @AddressID IS NOT NULL AND (@UserIDAddressID IS NULL OR @UserID IS NULL)
 		BEGIN
-			RAISERROR('You must declare AddressID for update statement', 16, 1)
+			RAISERROR('LoginName or AddressID you passed does not exist', 16, 1)
 		END
 
-		IF @AddressID IS NOT NULL AND (SELECT UserID FROM dbo.tblAddress WHERE AddressID = @AddressID) <> (SELECT UserID FROM dbo.tblUser WHERE LoginName = @LoginName)
+		IF @AddressID IS NOT NULL AND @UserIDAddressID <> @UserID
 		BEGIN
-			RAISERROR('AddressID or LoginName you passed is not correct', 16, 1)
+			RAISERROR('AddressID does not match LoginName you passed', 16, 1)
 		END
 		
 		BEGIN TRAN
@@ -52,7 +53,7 @@ BEGIN
 				WHERE UserID = @UserID
 			END
 
-			IF @IsUpdate = 0
+			IF @AddressID IS NULL
 				BEGIN
 					INSERT INTO dbo.tblAddress
 					(
