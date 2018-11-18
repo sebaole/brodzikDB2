@@ -12,6 +12,7 @@
 	[ContactPersonLastName]  NVARCHAR(150) NULL ,
 	[ContactPhoneNumber]     NVARCHAR(32) NULL ,
 	[IsMainAddress]          BIT NOT NULL ,
+	[IsActive]				 BIT NOT NULL,
 	[DateCreated]            DATETIME NOT NULL DEFAULT GETDATE(),
 	[LastUpdated]            DATETIME NULL ,
 	CONSTRAINT [PK_tblDeliveryAddress] PRIMARY KEY CLUSTERED ([AddressID] ASC)

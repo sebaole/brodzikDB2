@@ -5,7 +5,7 @@
 	[Description]			NVARCHAR(32) NOT NULL ,
 	[IsNotificationSMS]		BIT NOT NULL ,
 	[IsNotificationEmail]	BIT NOT NULL ,
-	[SortOrder]				TINYINT NULL
+	[SortOrder]				TINYINT NULL,
 	CONSTRAINT [PK_tblOrderStatus] PRIMARY KEY CLUSTERED ([OrderStatusID] ASC)
 );
 GO

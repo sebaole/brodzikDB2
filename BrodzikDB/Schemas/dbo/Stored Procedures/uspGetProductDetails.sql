@@ -23,6 +23,7 @@ BEGIN
 
 			SELECT 
 				P.ProductID
+				,P.ProductName
 				,PC.CategoryName
 				,P.CategoryID
 				,P.Ingredients
@@ -30,6 +31,15 @@ BEGIN
 				,P.UnitRetailPrice
 				,P.UnitWholesalePrice
 				,V.VATRate
+				,[GrossRetailPrice] = ROUND((P.UnitRetailPrice) * (1 + V.VATRate),2)
+				,[GrossWholesalePrice] = ROUND((P.UnitWholesalePrice) * (1 + V.VATRate),2)
+				,P.IsMonday
+				,P.IsTuesday
+				,P.IsWednesday
+				,P.IsThursday
+				,P.IsFriday
+				,P.IsSaturday
+				,P.IsSunday
 			FROM dbo.tblProduct P
 			INNER JOIN dict.tblProductCategory PC
 				ON P.CategoryID = PC.CategoryID

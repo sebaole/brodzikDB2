@@ -9,6 +9,7 @@
 	,@OrderStatusCode	NVARCHAR(16) = NULL
 	,@OrderNr			NVARCHAR(16) = NULL
 	,@OrderID			INT = NULL
+	,@IsInvoiced		BIT = NULL
 )
 AS
 
@@ -68,6 +69,7 @@ BEGIN
 				AND (O.OrderID = @OrderID OR @OrderID IS NULL)
 				AND (O.OrderNr = @OrderNr OR @OrderNr IS NULL)
 				AND (U.CompanyName LIKE '%' + @ClientName + '%' OR U.LastName LIKE '%' + @ClientName + '%' OR U.FirstName LIKE '%' + @ClientName + '%' OR @ClientName IS NULL)
+				AND (O.IsInvoiced = @IsInvoiced OR @IsInvoiced IS NULL)
 			ORDER BY O.OrderID DESC
 
 		COMMIT

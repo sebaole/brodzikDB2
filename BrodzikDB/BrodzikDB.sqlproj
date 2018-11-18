@@ -128,6 +128,10 @@
     <Build Include="Schemas\dbo\Stored Procedures\uspGetOrderDetails.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspGetProductDetails.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspGetOrderItems.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspAddAddress.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspGetAddress.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspDeleteShoppingCart.sql" />
+    <Build Include="Schemas\report\Stored Procedures\uspGetProductsForDeliveryDate.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />
