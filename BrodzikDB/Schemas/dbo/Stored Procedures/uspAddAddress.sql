@@ -45,7 +45,7 @@ BEGIN
 					
 			/* target sql statements here */
 
-			--if new main adress is passed then update existing ones
+			/* if new main adress is passed then update existing ones */
 			IF @IsMainAddress = 1
 			BEGIN
 				UPDATE dbo.tblAddress
@@ -55,6 +55,13 @@ BEGIN
 
 			IF @AddressID IS NULL
 				BEGIN
+
+					/* first added address must be main */
+					IF @IsMainAddress = 0 AND NOT EXISTS (SELECT 1 FROM dbo.tblAddress WHERE UserID = @UserID) 
+					BEGIN
+						SET @IsMainAddress = 1
+					END
+
 					INSERT INTO dbo.tblAddress
 					(
 						 [UserID]                
