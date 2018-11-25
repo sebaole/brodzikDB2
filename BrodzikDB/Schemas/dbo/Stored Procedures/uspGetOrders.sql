@@ -55,6 +55,7 @@ BEGIN
 				,O.CustomerNote
 				,OS.ReasonDisapproved
 				,U.PhoneNumber
+				,U.LoginName
 			FROM dbo.tblOrder O
 			LEFT JOIN dbo.vwOrderLatestStatus OS
 				ON O.OrderID = OS.OrderID

@@ -30,9 +30,15 @@ BEGIN
 				,OI.Quantity
 				,OI.UnitPrice
 				,OI.VATRate
+				,C.CategoryName
+				,[GrossPrice] = ROUND((OI.VATRate * OI.[UnitPrice]) + OI.[UnitPrice], 2)
 			FROM dbo.tblOrder O
 			INNER JOIN dbo.tblOrderItem OI
 				ON O.OrderID = OI.OrderID
+			LEFT JOIN dbo.tblProduct P
+				ON OI.ProductID = P.ProductID
+			LEFT JOIN dict.tblProductCategory C
+				ON P.CategoryID = C.CategoryID
 			WHERE 
 				O.OrderNr = @OrderNr
 		
