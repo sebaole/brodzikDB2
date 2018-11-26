@@ -32,6 +32,9 @@ BEGIN
 				,V.VATRate
 				,SC.DeliveryDate
 				,PC.CategoryName
+				,[CategoryKDRActive] = PC.IsKDRActive
+				,PC.KDRGrossDiscount
+				,[UserKDRActive] = U.IsKDR
 			FROM dbo.tblShoppingCart SC
 			INNER JOIN dbo.tblProduct P
 				ON SC.ProductID = P.ProductID
@@ -55,6 +58,7 @@ BEGIN
 				,UnitPrice
 				,VATRate
 				,[GrossPrice] = ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2)
+				,[GrossPriceWithDiscount] = IIF(UserKDRActive = 1 AND CategoryKDRActive = 1,  ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2) - [KDRGrossDiscount], ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2))
 				,DeliveryDate
 				,CategoryName
 			FROM CTE 

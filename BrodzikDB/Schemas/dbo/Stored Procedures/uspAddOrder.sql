@@ -267,6 +267,7 @@ BEGIN
 				,[VATRate]             
 				,[UserDiscountRate]    
 				,[ProductDiscountRate] 
+				,GrossPriceWithDiscount
 			)
 			SELECT
 				@OrderID
@@ -277,9 +278,15 @@ BEGIN
 				,V.VATRate
 				,NULL
 				,NULL
+				,[GrossPriceWithDiscount] = IIF(U.IsKDR = 1 AND PC.IsKDRActive = 1
+												, ROUND(IIF(U.IsWholesalePriceActive = 0, P.UnitRetailPrice, P.UnitWholesalePrice) * (1 + V.VATRate), 2) - PC.KDRGrossDiscount
+												, ROUND(IIF(U.IsWholesalePriceActive = 0, P.UnitRetailPrice, P.UnitWholesalePrice) * (1 + V.VATRate), 2)
+												)
 			FROM #tempShoppingCart SC
 			INNER JOIN dbo.tblProduct P
 				ON SC.ProductID = P.ProductID
+			INNER JOIN dict.tblProductCategory PC
+				ON P.CategoryID = PC.CategoryID
 			INNER JOIN dict.tblVATRate V
 				ON P.VATID = V.VATID
 			INNER JOIN dbo.tblUser U

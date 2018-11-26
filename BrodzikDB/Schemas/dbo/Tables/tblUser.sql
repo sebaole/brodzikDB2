@@ -16,6 +16,7 @@
 	,[IsDeliveryActive]			BIT NOT NULL DEFAULT(0)
 	,[IsGDPRAccepted]			BIT NOT NULL DEFAULT(0)
 	,[IsMarketingAccepted]		BIT NOT NULL DEFAULT(0)
+	,[IsKDR]					BIT NOT NULL DEFAULT(0)
 	,[IsActive]					BIT NOT NULL DEFAULT(1)
 	,[DateCreated]				DATETIME NOT NULL  DEFAULT GETDATE()
 	,[LastUpdated]				DATETIME NULL 

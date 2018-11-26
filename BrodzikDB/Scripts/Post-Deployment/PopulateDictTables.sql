@@ -42,12 +42,12 @@ SET IDENTITY_INSERT [dict].[tblVATRate] OFF
 SET IDENTITY_INSERT [dict].[tblProductCategory] ON 
 INSERT [dict].[tblProductCategory] 
 (
-	[CategoryID], [CategoryName], [Description]
+	[CategoryID], [CategoryName], [Description], [IsKDRActive], [KDRGrossDiscount]
 ) 
 VALUES 
-	 (1		, N'Chleb'		, N'')
-	,(2		, N'Pasta'		, N'')
-	,(3		, N'Torba'		, N'')
-	,(4		, N'Makaron'	, N'')
-	,(5		, N'Kasza'		, N'')
+	 (1		, N'Chleb'		, N'', 1	,2)
+	,(2		, N'Pasta'		, N'', 1	,2)
+	,(3		, N'Torba'		, N'', 0	,0)
+	,(4		, N'Makaron'	, N'', 0	,0)
+	,(5		, N'Kasza'		, N'', 0	,0)
 SET IDENTITY_INSERT [dict].[tblProductCategory] OFF

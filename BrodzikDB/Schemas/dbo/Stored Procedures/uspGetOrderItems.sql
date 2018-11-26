@@ -31,7 +31,8 @@ BEGIN
 				,OI.UnitPrice
 				,OI.VATRate
 				,C.CategoryName
-				,[GrossPrice] = ROUND((OI.VATRate * OI.[UnitPrice]) + OI.[UnitPrice], 2)
+				--,[GrossPrice] = ROUND((OI.VATRate * OI.[UnitPrice]) + OI.[UnitPrice], 2)
+				,[GrossPrice] = OI.GrossPriceWithDiscount
 			FROM dbo.tblOrder O
 			INNER JOIN dbo.tblOrderItem OI
 				ON O.OrderID = OI.OrderID

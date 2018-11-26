@@ -15,6 +15,7 @@
 	,@IsWholesalePriceActive	BIT = 0
 	,@IsGDPRAccepted			BIT = 0
 	,@IsMarketingAccepted		BIT = 0
+	,@IsKDR						BIT = 0
 	,@IsActive					BIT = 1
 	,@UserID					INT OUTPUT
 )
@@ -68,6 +69,7 @@ BEGIN
 					,[IsWholesalePriceActive]
 					,[IsGDPRAccepted]
 					,[IsMarketingAccepted]
+					,[IsKDR]
 					,[IsActive]
 				)
 				VALUES
@@ -87,6 +89,7 @@ BEGIN
 					,@IsWholesalePriceActive
 					,@IsGDPRAccepted
 					,@IsMarketingAccepted
+					,@IsKDR
 					,@IsActive
 				)
 
@@ -108,6 +111,7 @@ BEGIN
 						,[IsDeliveryActive] = @IsDeliveryActive
 						,[IsGDPRAccepted] = @IsGDPRAccepted	
 						,[IsMarketingAccepted] = @IsMarketingAccepted
+						,[IsKDR] = @IsKDR
 						,[IsActive] = @IsActive
 					WHERE UserID = @UserID AND LoginName = @LoginName -- double check
 				END
