@@ -133,6 +133,8 @@
     <Build Include="Schemas\dbo\Stored Procedures\uspDeleteShoppingCart.sql" />
     <Build Include="Schemas\report\Stored Procedures\uspGetProductsForDeliveryDate.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspUpdateOrder.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspCheckIsSMSNotification.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspUpdateOrderProduct.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />

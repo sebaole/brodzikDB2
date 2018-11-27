@@ -24,7 +24,7 @@ BEGIN
 		SELECT @CurrentStatusSortOrder = D.SortOrder, @CurrentStatusCode = L.StatusCode FROM dbo.vwOrderLatestStatus L INNER JOIN dict.tblOrderStatus D  ON L.StatusCode = D.StatusCode WHERE L.OrderID = @OrderID
 
 
-		IF @StatusCode IS NULL
+		IF @StatusCode IS NULL OR @OrderStatusID IS NULL
 			BEGIN
 				RAISERROR ('Incorrect value for @StatusCode = %s', 16, 1, @StatusCode)
 			END

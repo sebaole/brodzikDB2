@@ -5,8 +5,8 @@
 	,[Description]
 )
 VALUES 	
-	 (1		,'admin'		,null)
-	,(2		,'client'		,null)
+	 (1		,N'admin'		,null)
+	,(2		,N'client'		,null)
 
 INSERT INTO [dict].[tblOrderStatus]
 (
@@ -18,13 +18,14 @@ INSERT INTO [dict].[tblOrderStatus]
 	,[SortOrder]
 )
 VALUES
-	 (1		,'NEW'				,'Przyjęte do weryfikacji'	,1	,0	,1)
-	,(2		,'INPROGRESS'		,'W trakcie realizacji'		,1	,0	,2)
-	,(3		,'INDELIVERY'		,'W trakcie dostawy'		,1	,0	,3)
-	,(4		,'READY2PICKUP'		,'Gotowe do odbioru'		,1	,0	,4)
-	,(5		,'REJECTED'			,'Odrzucone'				,1	,0	,5)
-	,(6		,'DONE'				,'Zrealizowane'				,1	,0	,6)
-
+	 (1		,N'NEW'				,N'Czekaj na potwierdzenie'	,0	,0	,1)
+	,(2		,N'INPROGRESS'		,N'Przyjęte'				,1	,0	,2)
+	,(3		,N'INDELIVERY'		,N'W trakcie dostawy'		,1	,0	,3)
+	,(4		,N'DONE'			,N'Orzeł wylądował'			,1	,0	,5)
+	,(5		,N'REJECTED'		,N'Odrzucone'				,1	,0	,6)
+	,(6		,N'DELETED'			,N'Usunięte'				,1	,0	,7)
+	,(7		,N'RECURRING'		,N'Cykliczne'				,0	,0	,8)
+	--,(8		,'READY2PICKUP'		,'Gotowe do odbioru'		,1	,0	,4)
 
 SET IDENTITY_INSERT [dict].[tblVATRate] ON
 INSERT [dict].[tblVATRate] 

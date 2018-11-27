@@ -24,11 +24,38 @@ BEGIN
 			/* target sql statements here */
 			SELECT 
 				[ItemsCount] = COUNT(*)
-				,[TotalValue] = SUM(SC.Quantity * ROUND(IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice) * (1 + V.VATRate),2) )
+				--,[TotalValue] = SUM(
+				--					SC.Quantity * 
+				--					ROUND(
+				--							IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice) * (1 + V.VATRate)
+				--							,2
+				--						) 
+				--					)
+				,[TotalValue] = SUM(
+									SC.Quantity * 
+
+										IIF(U.IsKDR = 1 AND PC.IsKDRActive = 1,
+
+												ROUND	(
+														IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice) * (1 + V.VATRate)
+														,2
+														) - [KDRGrossDiscount],
+									
+												ROUND	(
+														IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice) * (1 + V.VATRate)
+														,2
+														)
+											)
+
+									)
+									
+
 			FROM dbo.tblShoppingCart SC
 			INNER JOIN dbo.tblProduct P
 				ON SC.ProductID = P.ProductID
 				AND P.IsActive = 1 -- return only available products
+			INNER JOIN dict.tblProductCategory PC
+				ON P.CategoryID = PC.CategoryID
 			INNER JOIN dbo.tblUser U
 				ON SC.UserID = U.UserID
 			INNER JOIN dict.tblVATRate V
