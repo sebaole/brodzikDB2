@@ -24,7 +24,7 @@ BEGIN
 		,@OriginDeliveryNumberLine2		NVARCHAR(16)
 		,@OriginDeliveryDate			DATETIME
 		,@NewCustomerNote				NVARCHAR(256)
-		,@DeliveryDateCounter			DATETIME
+		--,@DeliveryDateCounter			DATETIME
 		,@IntCounter					INT
 		,@outOrderID					INT
 		,@outOrderNr					NVARCHAR(16)
@@ -114,16 +114,13 @@ BEGIN
 
 			WHILE @@FETCH_STATUS = 0
 			   BEGIN
-
 					/* extra loop here */
 					SET @IntCounter = 1
-					SET @DeliveryDateCounter = DATEADD(WEEK, @OriginRecurrenceWeekNumber * @IntCounter, @OriginDeliveryDate)
-					
-					WHILE @DeliveryDateCounter <= @DeliveryDate
+
+					WHILE DATEADD(WEEK, @OriginRecurrenceWeekNumber * @IntCounter, @OriginDeliveryDate) <= @DeliveryDate
 						BEGIN
-							IF @DeliveryDateCounter = @DeliveryDate
+							IF DATEADD(WEEK, @OriginRecurrenceWeekNumber * @IntCounter, @OriginDeliveryDate) = @DeliveryDate
 								BEGIN
-									
 									SET @NewCustomerNote = CONCAT('[Utworzone automatycznie] ', @OriginCustomerNote)
 
 									EXEC [dbo].[uspAddOrder]
@@ -138,13 +135,10 @@ BEGIN
 											,@DeliveryNumberLine1 = @OriginDeliveryNumberLine1
 											,@DeliveryNumberLine2 = @OriginDeliveryNumberLine2
 											,@RecurrenceBaseOrderID = @OriginOrderID
-											--,@TotalPrice = ''
-											--,@TotalPriceWithDiscount = ''
 											,@OrderID = @outOrderID OUTPUT
 											,@OrderNr = @outOrderNr OUTPUT
 
 								END
-							
 							SET @IntCounter = @IntCounter + 1
 						END
 
@@ -165,15 +159,20 @@ BEGIN
 						,@OriginDeliveryDate
 			   END
 			
+		COMMIT
+
 			CLOSE sqlCursorForOrders
 			DEALLOCATE sqlCursorForOrders
 		
-		COMMIT
-
 	END TRY
 	BEGIN CATCH
 
 		SET @ReturnValue = -1
+
+		IF CURSOR_STATUS('local','sqlCursorForOrders') >= -1
+			BEGIN
+				DEALLOCATE sqlCursorForOrders
+			END
 
 		IF @@TRANCOUNT > 0 ROLLBACK TRAN
   

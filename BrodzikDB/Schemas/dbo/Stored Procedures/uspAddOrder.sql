@@ -10,8 +10,8 @@
 	,@DeliveryStreet			NVARCHAR(128) = NULL
 	,@DeliveryNumberLine1		NVARCHAR(16) = NULL
 	,@DeliveryNumberLine2		NVARCHAR(16) = NULL
-	,@TotalPrice				MONEY = NULL
-	,@TotalPriceWithDiscount	MONEY = NULL
+	,@TotalPrice				MONEY = 0 -- to be removed
+	,@TotalPriceWithDiscount	MONEY = 0 -- to be removed
 	
 	,@IsRecurring				BIT = 0
 	,@RecurrenceWeekNumber		TINYINT = NULL
@@ -118,129 +118,123 @@ BEGIN
 		/******************************************************************************************/
 		-- check products days availability
 		/******************************************************************************************/
-		--IF @RecurrenceBaseOrderID IS NULL
-		--BEGIN
-		--	PRINT 'CHECK PRODUCTS AVAILABILITY'
-		--END
-		--ELSE
-		--BEGIN
-		--	PRINT 'DO NOT CHECK PRODUCTS AVAILABILITY'
-		--END
-		
 		SET DATEFIRST  1;
 		SET @DeliveryDay = (SELECT DATEPART(WEEKDAY, @DeliveryDate))
-
-		IF @DeliveryDay = 1
+		
+		IF @RecurrenceBaseOrderID IS NULL /* for orders run by user based on shopping cart */
 			BEGIN
-				IF EXISTS (SELECT 1
-							FROM dbo.tblShoppingCart SC
-							INNER JOIN dbo.tblProduct P
-								ON SC.ProductID = P.ProductID							
-								AND P.IsMonday = 0
-							WHERE 
-								SC.UserID = @UserID
-								AND SC.DateExpired >= GETDATE()
-								AND SC.DeliveryDate = @DeliveryDate
-							)
-							BEGIN
-								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
-							END
-			END
-		ELSE IF @DeliveryDay = 2
-			BEGIN
-				IF EXISTS (SELECT 1
-							FROM dbo.tblShoppingCart SC
-							INNER JOIN dbo.tblProduct P
-								ON SC.ProductID = P.ProductID
-								AND P.IsTuesday = 0
-							WHERE 
-								SC.UserID = @UserID
-								AND SC.DateExpired >= GETDATE()
-								AND SC.DeliveryDate = @DeliveryDate
-							)
-							BEGIN
-								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
-							END
-			END
-		ELSE IF @DeliveryDay = 3
-			BEGIN
-				IF EXISTS (SELECT 1
-							FROM dbo.tblShoppingCart SC
-							INNER JOIN dbo.tblProduct P
-								ON SC.ProductID = P.ProductID
-								AND P.IsWednesday = 0
-							WHERE 
-								SC.UserID = @UserID
-								AND SC.DateExpired >= GETDATE()
-								AND SC.DeliveryDate = @DeliveryDate
-							)
-							BEGIN
-								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
-							END
-			END
-		ELSE IF @DeliveryDay = 4
-			BEGIN
-				IF EXISTS (SELECT 1
-							FROM dbo.tblShoppingCart SC
-							INNER JOIN dbo.tblProduct P
-								ON SC.ProductID = P.ProductID
-								AND P.IsThursday = 0
-							WHERE 
-								SC.UserID = @UserID
-								AND SC.DateExpired >= GETDATE()
-								AND SC.DeliveryDate = @DeliveryDate
-							)
-							BEGIN
-								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
-							END
-			END
-		ELSE IF @DeliveryDay = 5
-			BEGIN
-				IF EXISTS (SELECT 1
-							FROM dbo.tblShoppingCart SC
-							INNER JOIN dbo.tblProduct P
-								ON SC.ProductID = P.ProductID
-								AND P.IsFriday = 0
-							WHERE 
-								SC.UserID = @UserID
-								AND SC.DateExpired >= GETDATE()
-								AND SC.DeliveryDate = @DeliveryDate
-							)
-							BEGIN
-								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
-							END
-			END
-		ELSE IF @DeliveryDay = 6
-			BEGIN
-				IF EXISTS (SELECT 1
-							FROM dbo.tblShoppingCart SC
-							INNER JOIN dbo.tblProduct P
-								ON SC.ProductID = P.ProductID
-								AND P.IsSaturday = 0
-							WHERE 
-								SC.UserID = @UserID
-								AND SC.DateExpired >= GETDATE()
-								AND SC.DeliveryDate = @DeliveryDate
-							)
-							BEGIN
-								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
-							END
-			END
-		ELSE IF @DeliveryDay = 7
-			BEGIN
-				IF EXISTS (SELECT 1
-							FROM dbo.tblShoppingCart SC
-							INNER JOIN dbo.tblProduct P
-								ON SC.ProductID = P.ProductID
-								AND P.IsSunday = 0
-							WHERE 
-								SC.UserID = @UserID
-								AND SC.DateExpired >= GETDATE()
-								AND SC.DeliveryDate = @DeliveryDate
-							)
-							BEGIN
-								RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
-							END
+				IF @DeliveryDay = 1
+					BEGIN
+						IF EXISTS (SELECT 1
+									FROM dbo.tblShoppingCart SC
+									INNER JOIN dbo.tblProduct P
+										ON SC.ProductID = P.ProductID							
+										AND P.IsMonday = 0
+									WHERE 
+										SC.UserID = @UserID
+										AND SC.DateExpired >= GETDATE()
+										AND SC.DeliveryDate = @DeliveryDate
+									)
+									BEGIN
+										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+									END
+					END
+				ELSE IF @DeliveryDay = 2
+					BEGIN
+						IF EXISTS (SELECT 1
+									FROM dbo.tblShoppingCart SC
+									INNER JOIN dbo.tblProduct P
+										ON SC.ProductID = P.ProductID
+										AND P.IsTuesday = 0
+									WHERE 
+										SC.UserID = @UserID
+										AND SC.DateExpired >= GETDATE()
+										AND SC.DeliveryDate = @DeliveryDate
+									)
+									BEGIN
+										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+									END
+					END
+				ELSE IF @DeliveryDay = 3
+					BEGIN
+						IF EXISTS (SELECT 1
+									FROM dbo.tblShoppingCart SC
+									INNER JOIN dbo.tblProduct P
+										ON SC.ProductID = P.ProductID
+										AND P.IsWednesday = 0
+									WHERE 
+										SC.UserID = @UserID
+										AND SC.DateExpired >= GETDATE()
+										AND SC.DeliveryDate = @DeliveryDate
+									)
+									BEGIN
+										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+									END
+					END
+				ELSE IF @DeliveryDay = 4
+					BEGIN
+						IF EXISTS (SELECT 1
+									FROM dbo.tblShoppingCart SC
+									INNER JOIN dbo.tblProduct P
+										ON SC.ProductID = P.ProductID
+										AND P.IsThursday = 0
+									WHERE 
+										SC.UserID = @UserID
+										AND SC.DateExpired >= GETDATE()
+										AND SC.DeliveryDate = @DeliveryDate
+									)
+									BEGIN
+										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+									END
+					END
+				ELSE IF @DeliveryDay = 5
+					BEGIN
+						IF EXISTS (SELECT 1
+									FROM dbo.tblShoppingCart SC
+									INNER JOIN dbo.tblProduct P
+										ON SC.ProductID = P.ProductID
+										AND P.IsFriday = 0
+									WHERE 
+										SC.UserID = @UserID
+										AND SC.DateExpired >= GETDATE()
+										AND SC.DeliveryDate = @DeliveryDate
+									)
+									BEGIN
+										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+									END
+					END
+				ELSE IF @DeliveryDay = 6
+					BEGIN
+						IF EXISTS (SELECT 1
+									FROM dbo.tblShoppingCart SC
+									INNER JOIN dbo.tblProduct P
+										ON SC.ProductID = P.ProductID
+										AND P.IsSaturday = 0
+									WHERE 
+										SC.UserID = @UserID
+										AND SC.DateExpired >= GETDATE()
+										AND SC.DeliveryDate = @DeliveryDate
+									)
+									BEGIN
+										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+									END
+					END
+				ELSE IF @DeliveryDay = 7
+					BEGIN
+						IF EXISTS (SELECT 1
+									FROM dbo.tblShoppingCart SC
+									INNER JOIN dbo.tblProduct P
+										ON SC.ProductID = P.ProductID
+										AND P.IsSunday = 0
+									WHERE 
+										SC.UserID = @UserID
+										AND SC.DateExpired >= GETDATE()
+										AND SC.DeliveryDate = @DeliveryDate
+									)
+									BEGIN
+										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+									END
+					END
 			END
 		/******************************************************************************************/
 		-- end products days availability validation
@@ -308,6 +302,7 @@ BEGIN
 				,UserID			INT NOT NULL
 				,ProductID		INT NOT NULL
 				,Quantity		INT NOT NULL
+				,IsAvailable	BIT NOT NULL
 			)
 			
 			IF @RecurrenceBaseOrderID IS NULL /* for orders run by user based on shopping cart */
@@ -318,12 +313,14 @@ BEGIN
 						,UserID	
 						,ProductID		
 						,Quantity
+						,IsAvailable
 					)	
 					SELECT
 						ShoppingCartID
 						,UserID
 						,ProductID
 						,Quantity
+						,[IsAvailable] = 1
 					FROM dbo.tblShoppingCart
 					WHERE 
 						UserID = @UserID
@@ -338,15 +335,29 @@ BEGIN
 						,UserID	
 						,ProductID		
 						,Quantity
+						,IsAvailable
 					)	
 					SELECT
 						ShoppingCartID = NULL
 						,UserID = O.UserID
 						,ProductID = OI.ProductID
 						,Quantity = OI.Quantity
+						/* additional check for recurring orders created not from shopping cart */
+						,[IsAvailable] =CASE 
+											WHEN @DeliveryDay = 1 AND P.IsMonday = 0 THEN 0
+											WHEN @DeliveryDay = 2 AND P.IsTuesday = 0 THEN 0
+											WHEN @DeliveryDay = 3 AND P.IsWednesday = 0 THEN 0
+											WHEN @DeliveryDay = 4 AND P.IsThursday = 0 THEN 0
+											WHEN @DeliveryDay = 5 AND P.IsFriday = 0 THEN 0
+											WHEN @DeliveryDay = 6 AND P.IsSaturday = 0 THEN 0
+											WHEN @DeliveryDay = 7 AND P.IsSunday = 0 THEN 0
+											ELSE 1
+										END
 					FROM dbo.tblOrder O
 					INNER JOIN dbo.tblOrderItem OI
-						ON O.OrderID = OI.OrderID
+						ON O.OrderID = OI.OrderID				
+					INNER JOIN dbo.tblProduct P
+						ON OI.ProductID = P.ProductID		
 					WHERE O.OrderID = @RecurrenceBaseOrderID
 				END
 
@@ -381,6 +392,7 @@ BEGIN
 				ON P.VATID = V.VATID
 			INNER JOIN dbo.tblUser U
 				ON SC.UserID = U.UserID
+			WHERE SC.IsAvailable = 1
 
 			/******************************************************************************************/
 			/* delete item(s) from tblShoppingCart */
