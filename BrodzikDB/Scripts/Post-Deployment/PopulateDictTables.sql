@@ -24,7 +24,7 @@ VALUES
 	,(4		,N'DONE'			,N'Orzeł wylądował'			,1	,0	,5)
 	,(5		,N'REJECTED'		,N'Odrzucone'				,1	,0	,6)
 	,(6		,N'DELETED'			,N'Usunięte'				,1	,0	,7)
-	,(7		,N'RECURRING'		,N'Cykliczne'				,0	,0	,8)
+	--,(7		,N'RECURRING'		,N'Cykliczne'				,0	,0	,8)
 	--,(8		,'READY2PICKUP'		,'Gotowe do odbioru'		,1	,0	,4)
 
 SET IDENTITY_INSERT [dict].[tblVATRate] ON

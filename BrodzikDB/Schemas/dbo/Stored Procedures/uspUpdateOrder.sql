@@ -1,9 +1,11 @@
 ﻿CREATE PROCEDURE [dbo].[uspUpdateOrder]
 (
-	 @OrderNr			NVARCHAR(16)
-	 ,@IsInvoiced		BIT
-	 --,@IsSelfPickup		BIT = NULL
-	 --,@DeliveryStreet	NVARCHAR(256) = NULL
+	 @OrderNr				NVARCHAR(16)
+	,@IsInvoiced			BIT = NULL
+	,@IsSelfPickup			BIT = NULL
+	,@IsRecurring			BIT = NULL
+	,@RecurrenceWeekNumber	TINYINT = NULL
+	,@DateEndRecurring		DATETIME = NULL
 )
 AS
 
@@ -17,16 +19,26 @@ BEGIN
 	BEGIN TRY
 
 		/* some extra validations here */
+		IF @IsRecurring = 1 AND (@RecurrenceWeekNumber IS NULL OR @DateEndRecurring IS NULL)
+			BEGIN
+				RAISERROR('Insufficient number of parameters for recurring orders', 16, 1)
+			END
 		
 		BEGIN TRAN
 					
 			/* target sql statements here */
 			UPDATE dbo.tblOrder
 			SET
-				 IsInvoiced		= @IsInvoiced
-				 ,DateInvoiced	= IIF(@IsInvoiced =1 , GETDATE(), NULL)
-				--,IsSelfPickup	= ISNULL(@IsSelfPickup, IsSelfPickup)
-				--,DeliveryStreet = ISNULL(@DeliveryStreet, DeliveryStreet)
+				 [IsInvoiced]			= ISNULL(@IsInvoiced, IsInvoiced)
+				,[DateInvoiced]			= CASE 
+											WHEN @IsInvoiced = 1 THEN GETDATE()
+											WHEN @IsInvoiced = 0 THEN NULL
+											ELSE IsInvoiced 
+										END
+				,[IsSelfPickup]			= ISNULL(@IsSelfPickup ,IsSelfPickup)
+				,[IsRecurring]			= ISNULL(@IsRecurring ,IsRecurring)
+				,[RecurrenceWeekNumber]	= ISNULL(@RecurrenceWeekNumber ,RecurrenceWeekNumber)
+				,[DateEndRecurrence]	= ISNULL(@DateEndRecurring ,DateEndRecurrence)
 			WHERE OrderNr = @OrderNr
 		
 		COMMIT

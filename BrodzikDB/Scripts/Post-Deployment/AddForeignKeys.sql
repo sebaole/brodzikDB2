@@ -9,6 +9,11 @@ GO
 ALTER TABLE [dbo].[tblOrder] CHECK CONSTRAINT [FK_232]
 GO
 
+ALTER TABLE [dbo].[tblOrder] WITH CHECK ADD CONSTRAINT [FK2_tblOrder_RecurrenceBaseOrderID_tblOrder_OrderID] FOREIGN KEY ([RecurrenceBaseOrderID]) REFERENCES [dbo].[tblOrder]([OrderID])
+GO
+ALTER TABLE [dbo].[tblOrder] CHECK CONSTRAINT [FK2_tblOrder_RecurrenceBaseOrderID_tblOrder_OrderID]
+GO
+
 ALTER TABLE [dbo].[tblOrderHistory] WITH CHECK ADD CONSTRAINT [FK_180] FOREIGN KEY ([OrderStatusID]) REFERENCES [dict].[tblOrderStatus]([OrderStatusID])
 GO
 ALTER TABLE [dbo].[tblOrderHistory] CHECK CONSTRAINT [FK_180]

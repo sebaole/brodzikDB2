@@ -6,10 +6,9 @@
 	[OrderDate]              DATETIME NOT NULL  DEFAULT GETDATE(),
 	[DeliveryDate]           DATETIME NOT NULL ,
 	[IsSelfPickup]           BIT NOT NULL ,
-	[TotalPrice]             MONEY NOT NULL ,
-	[TotalPriceWithDiscount] MONEY NOT NULL ,
+	[TotalPrice]             MONEY NULL ,
+	[TotalPriceWithDiscount] MONEY NULL ,
 	[CustomerNote]           NVARCHAR(256) NULL ,
-	--[ReasonDisapproved]      NVARCHAR(256) NULL ,
 	[IsInvoiced]             BIT NOT NULL DEFAULT(0),
 	[DateInvoiced]           DATETIME NULL ,
 	[DeliveryCity]           NVARCHAR(64) NULL ,
@@ -19,11 +18,17 @@
 	[DeliveryNumberLine1]    NVARCHAR(16) NULL ,
 	[DeliveryNumberLine2]    NVARCHAR(16) NULL,
 	
+	[IsRecurring]			 BIT NOT NULL DEFAULT(0),
+	[RecurrenceWeekNumber]	 TINYINT NULL,
+	[DateEndRecurrence]		 DATETIME NULL,
+	[RecurrenceBaseOrderID]	 INT NULL,
+
 	[DateCreated]            DATETIME NOT NULL DEFAULT GETDATE(),
 	[LastUpdated]            DATETIME NULL 
 
 	,CONSTRAINT [PK_tblOrder] PRIMARY KEY CLUSTERED ([OrderID] ASC)
 	,CONSTRAINT [UQ_tblOrder_OrderNr] UNIQUE ([OrderNr])
+	,CONSTRAINT [UQ_tblOrder_RecurrenceBaseOrderID_DeliveryDate] UNIQUE ([RecurrenceBaseOrderID], [DeliveryDate]) -- safe check for no chance to insert recurring order > 1x
 );
 GO
 
