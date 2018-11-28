@@ -28,8 +28,11 @@
 
 	,CONSTRAINT [PK_tblOrder] PRIMARY KEY CLUSTERED ([OrderID] ASC)
 	,CONSTRAINT [UQ_tblOrder_OrderNr] UNIQUE ([OrderNr])
-	,CONSTRAINT [UQ_tblOrder_RecurrenceBaseOrderID_DeliveryDate] UNIQUE ([RecurrenceBaseOrderID], [DeliveryDate]) -- safe check for no chance to insert recurring order > 1x
+	--,CONSTRAINT [UQ_tblOrder_RecurrenceBaseOrderID_DeliveryDate] UNIQUE ([RecurrenceBaseOrderID], [DeliveryDate]) -- safe check for no chance to insert recurring order > 1x
 );
+GO
+
+CREATE UNIQUE INDEX UQ_IX_tblOrder_RecurrenceBaseOrderID_DeliveryDate ON [dbo].[tblOrder]([RecurrenceBaseOrderID], [DeliveryDate]) WHERE [RecurrenceBaseOrderID] IS NOT NULL
 GO
 
 CREATE TRIGGER [dbo].[trgOrder] ON [dbo].[tblOrder]

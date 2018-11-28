@@ -10,10 +10,10 @@
 	,@DeliveryStreet			NVARCHAR(128) = NULL
 	,@DeliveryNumberLine1		NVARCHAR(16) = NULL
 	,@DeliveryNumberLine2		NVARCHAR(16) = NULL
-	,@TotalPrice				MONEY
-	,@TotalPriceWithDiscount	MONEY
+	,@TotalPrice				MONEY = NULL
+	,@TotalPriceWithDiscount	MONEY = NULL
 	
-	,@IsRecurring				BIT = NULL
+	,@IsRecurring				BIT = 0
 	,@RecurrenceWeekNumber		TINYINT = NULL
 	,@DateEndRecurrence			DATETIME = NULL
 	,@RecurrenceBaseOrderID		INT = NULL
@@ -78,7 +78,7 @@ BEGIN
 				RAISERROR('Insufficient number of parameters for recurring orders.', 16, 1)
 			END
 
-		IF NOT EXISTS (SELECT 1 FROM dbo.tblOrder WHERE OrderID = @RecurrenceBaseOrderID AND IsRecurring = 1)
+		IF @RecurrenceBaseOrderID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.tblOrder WHERE OrderID = @RecurrenceBaseOrderID AND IsRecurring = 1)
 			BEGIN
 				RAISERROR('OrderID %i does not exist or it is not recurring order.', 16, 1, @RecurrenceBaseOrderID)
 			END
@@ -118,6 +118,15 @@ BEGIN
 		/******************************************************************************************/
 		-- check products days availability
 		/******************************************************************************************/
+		--IF @RecurrenceBaseOrderID IS NULL
+		--BEGIN
+		--	PRINT 'CHECK PRODUCTS AVAILABILITY'
+		--END
+		--ELSE
+		--BEGIN
+		--	PRINT 'DO NOT CHECK PRODUCTS AVAILABILITY'
+		--END
+		
 		SET DATEFIRST  1;
 		SET @DeliveryDay = (SELECT DATEPART(WEEKDAY, @DeliveryDate))
 

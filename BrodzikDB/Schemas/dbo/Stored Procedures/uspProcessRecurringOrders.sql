@@ -22,9 +22,12 @@ BEGIN
 		,@OriginDeliveryStreet			NVARCHAR(128)
 		,@OriginDeliveryNumberLine1		NVARCHAR(16)
 		,@OriginDeliveryNumberLine2		NVARCHAR(16)
+		,@OriginDeliveryDate			DATETIME
 		,@NewCustomerNote				NVARCHAR(256)
-		,@NewDeliveryDate				DATETIME
+		,@DeliveryDateCounter			DATETIME
 		,@IntCounter					INT
+		,@outOrderID					INT
+		,@outOrderNr					NVARCHAR(16)
 
 	BEGIN TRY
 
@@ -33,7 +36,7 @@ BEGIN
 		BEGIN TRAN
 					
 			/* target sql statements here */
-			/*step1*/
+			/* step1 - get all not expired, recurring, not cancelled orders that has not been created yet */
 			IF OBJECT_ID('tempdb..#tempRecurringOrders') IS NOT NULL DROP TABLE #tempRecurringOrders
 
 			SELECT
@@ -49,6 +52,7 @@ BEGIN
 				,O.DeliveryStreet		
 				,O.DeliveryNumberLine1	
 				,O.DeliveryNumberLine2	
+				,O.DeliveryDate
 			INTO #tempRecurringOrders
 			FROM dbo.tblOrder O
 			INNER JOIN dbo.tblUser U
@@ -57,7 +61,7 @@ BEGIN
 				ON O.OrderID = LS.OrderID
 			WHERE 
 				IsRecurring = 1
-				AND DateEndRecurrence <= @DeliveryDate
+				AND DateEndRecurrence >= @DeliveryDate
 				AND LS.StatusCode NOT IN ('REJECTED','DELETED')
 				AND NOT EXISTS (SELECT 1 
 								FROM dbo.tblOrder O2 
@@ -67,7 +71,7 @@ BEGIN
 								)
 			
 
-			/*step2*/
+			/* step2 - go through all orders and check if it matched to provided @DeliveryDate */
 			IF CURSOR_STATUS('local','sqlCursorForOrders') >= -1
 			BEGIN
 				DEALLOCATE sqlCursorForOrders
@@ -87,9 +91,11 @@ BEGIN
 				,DeliveryStreet		
 				,DeliveryNumberLine1	
 				,DeliveryNumberLine2	
+				,DeliveryDate
 			FROM #tempRecurringOrders
 			
 			OPEN sqlCursorForOrders
+
 			FETCH NEXT FROM sqlCursorForOrders
 			INTO 
 				 @OriginOrderID
@@ -104,17 +110,18 @@ BEGIN
 				,@OriginDeliveryStreet		
 				,@OriginDeliveryNumberLine1	
 				,@OriginDeliveryNumberLine2	
+				,@OriginDeliveryDate
 
 			WHILE @@FETCH_STATUS = 0
 			   BEGIN
 
 					/* extra loop here */
 					SET @IntCounter = 1
-					SET @NewDeliveryDate = DATEADD(WEEK, @OriginRecurrenceWeekNumber * @IntCounter, @OriginOrderDate)
+					SET @DeliveryDateCounter = DATEADD(WEEK, @OriginRecurrenceWeekNumber * @IntCounter, @OriginDeliveryDate)
 					
-					WHILE @NewDeliveryDate <= @DeliveryDate
+					WHILE @DeliveryDateCounter <= @DeliveryDate
 						BEGIN
-							IF @NewDeliveryDate = @DeliveryDate
+							IF @DeliveryDateCounter = @DeliveryDate
 								BEGIN
 									
 									SET @NewCustomerNote = CONCAT('[Utworzone automatycznie] ', @OriginCustomerNote)
@@ -133,8 +140,8 @@ BEGIN
 											,@RecurrenceBaseOrderID = @OriginOrderID
 											--,@TotalPrice = ''
 											--,@TotalPriceWithDiscount = ''
-											--,@OrderID OUTPUT
-											--,@OrderNr OUTPUT
+											,@OrderID = @outOrderID OUTPUT
+											,@OrderNr = @outOrderNr OUTPUT
 
 								END
 							
@@ -155,6 +162,7 @@ BEGIN
 						,@OriginDeliveryStreet		
 						,@OriginDeliveryNumberLine1	
 						,@OriginDeliveryNumberLine2 
+						,@OriginDeliveryDate
 			   END
 			
 			CLOSE sqlCursorForOrders
