@@ -39,6 +39,11 @@ BEGIN
 				,O.DeliveryNumberLine2
 				,[OrderStatus] = OS.StatusCode
 				,[OrderStatusDesc] = OS.Description
+				,O.IsRecurring
+				,O.RecurrenceWeekNumber
+				,O.DateEndRecurrence
+				,O.RecurrenceBaseOrderID
+				,[IsCreatedAutomatically] = IIF(O.RecurrenceBaseOrderID IS NOT NULL, 1, 0)
 			FROM dbo.tblOrder O
 			INNER JOIN dbo.tblUser U
 				ON O.UserID = U.UserID

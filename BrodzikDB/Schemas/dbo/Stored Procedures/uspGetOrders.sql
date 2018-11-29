@@ -1,16 +1,18 @@
 ﻿CREATE PROCEDURE [dbo].[uspGetOrders]
 (
-	@LoginName			NCHAR(9) = NULL
-	,@ClientName		NVARCHAR(300) = NULL
-	,@OrderDateFrom		DATETIME = NULL
-	,@OrderDateTo		DATETIME = NULL
-	,@DeliveryDateFrom	DATETIME = NULL
-	,@DeliveryDateTo	DATETIME = NULL
-	,@OrderStatusCode	NVARCHAR(16) = NULL
-	,@OrderNr			NVARCHAR(16) = NULL
-	,@OrderID			INT = NULL
-	,@IsInvoiced		BIT = NULL
-	,@IsBusinessClient	BIT = NULL
+	@LoginName					NCHAR(9) = NULL
+	,@ClientName				NVARCHAR(300) = NULL
+	,@OrderDateFrom				DATETIME = NULL
+	,@OrderDateTo				DATETIME = NULL
+	,@DeliveryDateFrom			DATETIME = NULL
+	,@DeliveryDateTo			DATETIME = NULL
+	,@OrderStatusCode			NVARCHAR(16) = NULL
+	,@OrderNr					NVARCHAR(16) = NULL
+	,@OrderID					INT = NULL
+	,@IsInvoiced				BIT = NULL
+	,@IsBusinessClient			BIT = NULL
+	,@IsRecurring				BIT = NULL
+	,@IsCreatedAutomatically	BIT = NULL
 )
 AS
 
@@ -56,6 +58,11 @@ BEGIN
 				,OS.ReasonDisapproved
 				,U.PhoneNumber
 				,U.LoginName
+				,O.IsRecurring
+				,O.RecurrenceWeekNumber
+				,O.DateEndRecurrence
+				,O.RecurrenceBaseOrderID
+				,[IsCreatedAutomatically] = IIF(O.RecurrenceBaseOrderID IS NOT NULL, 1, 0)
 			FROM dbo.tblOrder O
 			LEFT JOIN dbo.vwOrderLatestStatus OS
 				ON O.OrderID = OS.OrderID
@@ -73,6 +80,8 @@ BEGIN
 				AND (U.CompanyName LIKE '%' + @ClientName + '%' OR U.LastName LIKE '%' + @ClientName + '%' OR U.FirstName LIKE '%' + @ClientName + '%' OR @ClientName IS NULL)
 				AND (O.IsInvoiced = @IsInvoiced OR @IsInvoiced IS NULL)
 				AND (U.IsBusinessClient = @IsBusinessClient OR @IsBusinessClient IS NULL)
+				AND (O.IsRecurring = @IsRecurring OR @IsRecurring IS NULL)
+				AND (IIF(O.RecurrenceBaseOrderID IS NOT NULL, 1, 0) = @IsCreatedAutomatically OR @IsCreatedAutomatically IS NULL)
 			ORDER BY O.OrderID DESC
 
 		COMMIT
