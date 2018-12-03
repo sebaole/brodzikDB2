@@ -45,7 +45,7 @@ BEGIN
 								AND OrderDate < CAST(DATEADD(DAY, 1, GETDATE()) AS DATE)
 							)
 
-		SET @OrderNr = (SELECT CONCAT(YEAR(GETDATE()), MONTH(GETDATE()), DAY(GETDATE()), '_', FORMAT(@OrderCount + 1, '0000') ))
+		SET @OrderNr = (SELECT CONCAT(YEAR(GETDATE()), FORMAT(MONTH(GETDATE()), '00'), FORMAT(DAY(GETDATE()), '00'), '_', FORMAT(@OrderCount + 1, '0000') ))
 
 		/* some extra validations here */
 
