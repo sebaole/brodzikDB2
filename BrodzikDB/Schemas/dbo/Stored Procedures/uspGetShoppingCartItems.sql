@@ -56,9 +56,9 @@ BEGIN
 				,ProductName
 				,Quantity
 				,UnitPrice
-				,VATRate
-				,[GrossPriceWithoutDiscount] = ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2) -- 26.11.2018 qucikFix With -> Without
-				,[GrossPrice] = IIF(UserKDRActive = 1 AND CategoryKDRActive = 1,  ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2) - [KDRGrossDiscount], ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2))
+				,VATRate				
+				,[GrossPrice] = ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2)
+				,[GrossPriceWithDiscount] = IIF(UserKDRActive = 1 AND CategoryKDRActive = 1,  ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2) - [KDRGrossDiscount], ROUND((VATRate * [UnitPrice]) + [UnitPrice], 2))
 				,DeliveryDate
 				,CategoryName
 			FROM CTE 

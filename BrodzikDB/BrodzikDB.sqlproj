@@ -98,9 +98,7 @@
     <Build Include="Schemas\dbo\Tables\tblOrderItem.sql" />
     <Build Include="Schemas\dbo\Tables\tblOrderNotification.sql" />
     <Build Include="Schemas\dbo\Tables\tblProduct.sql" />
-    <Build Include="Schemas\dbo\Tables\tblProductDiscount.sql" />
     <Build Include="Schemas\dbo\Tables\tblShoppingCart.sql" />
-    <Build Include="Schemas\dbo\Tables\tblUserDiscount.sql" />
     <Build Include="Schemas\dbo\Tables\tblUserNotification.sql" />
     <Build Include="Schemas\dbo\Tables\tblUser.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspAddUser.sql" />
@@ -136,6 +134,10 @@
     <Build Include="Schemas\dbo\Stored Procedures\uspCheckIsSMSNotification.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspUpdateOrderProduct.sql" />
     <Build Include="Schemas\dbo\Stored Procedures\uspProcessRecurringOrders.sql" />
+    <Build Include="Schemas\log\Stored Procedures\uspAddAppEventLog.sql" />
+    <Build Include="Schemas\dict\Tables\tblCustomParam.sql" />
+    <Build Include="Schemas\report\Stored Procedures\uspGetDeliveryDateSummary.sql" />
+    <Build Include="Schemas\report\Stored Procedures\uspGetDeliveryDateDetails.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />

@@ -24,13 +24,6 @@ BEGIN
 			/* target sql statements here */
 			SELECT 
 				[ItemsCount] = COUNT(*)
-				--,[TotalValue] = SUM(
-				--					SC.Quantity * 
-				--					ROUND(
-				--							IIF(U.IsWholesalePriceActive = 1, P.UnitWholesalePrice, P.UnitRetailPrice) * (1 + V.VATRate)
-				--							,2
-				--						) 
-				--					)
 				,[TotalValue] = SUM(
 									SC.Quantity * 
 

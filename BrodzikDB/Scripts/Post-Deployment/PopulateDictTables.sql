@@ -52,3 +52,17 @@ VALUES
 	,(4		, N'Makaron'	, N'', 0	,0)
 	,(5		, N'Kasza'		, N'', 0	,0)
 SET IDENTITY_INSERT [dict].[tblProductCategory] OFF
+
+
+SET IDENTITY_INSERT [dict].[tblCustomParam] ON 
+GO
+INSERT [dict].[tblCustomParam] 
+(
+	[IdParam], [ParamName], [ParamValue]
+) 
+VALUES 
+	(1	, N'AdresOdbioru'	, N'Warszawska 49, 05-120 Legionowo')
+	,(2	, N'Godziny1'		, N'Pn - Pt: 7:30 - 19:00')
+	,(3	, N'Godziny2'		, N'Sob: 9:00 - 14:00')
+SET IDENTITY_INSERT [dict].[tblCustomParam] OFF
+GO

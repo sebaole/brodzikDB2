@@ -1,84 +1,107 @@
-﻿-- =============================================
--- Author:		Rafał Kubowicz
--- =============================================
-CREATE PROCEDURE [dbo].[uspLoginUser] 
-	-- Add the parameters for the stored procedure here
-	@login as nvarchar(50),
-	@pass_hash as nvarchar(500),
-	@ses_id as nvarchar(200),
-	@session_time as int
-	
+﻿CREATE PROCEDURE [dbo].[uspLoginUser] 
+(
+	 @login			NVARCHAR(9)
+	,@pass_hash		NVARCHAR(500)
+	,@ses_id		NVARCHAR(200)
+	,@session_time	INT
+)	
 AS
+
 BEGIN
-	
-	declare @max_bad_pass as int;
-	set @max_bad_pass = 5;
 
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
-	SET NOCOUNT ON;
+	SET	XACT_ABORT, NOCOUNT ON
 
-    -- Insert statements for procedure here
-	declare @saved_pass_hash as nvarchar(500); 
-	declare @isActive as bit;
+	DECLARE 
+		@ReturnValue		SMALLINT = 0
+		,@max_bad_pass		INT = 5
+		,@saved_pass_hash	NVARCHAR(500)
+		,@isActive			BIT
+		,@return_status		NVARCHAR(100)
 
+	SET @saved_pass_hash = (SELECT PasswordHash FROM dbo.tblUser WHERE LoginName = @login)
+	SET @isActive = (SELECT IsActive FROM dbo.tblUser WHERE LoginName = @login)
 
-	SELECT @saved_pass_hash = PasswordHash from tblUser where LoginName = @login ;
-	SELECT @isActive = IsActive from tblUser where LoginName = @login ;
-	
-	
-	If @pass_hash = @saved_pass_hash and @isActive = 1
-
-			begin
-					--Weryfikacja czy sesja juz istnieje
-
-					declare @userId as integer
-					SELECT @userId = userID from tblUser where LoginName = @login
-
-				
-
-					declare @return_status as nvarchar(100)
-					execute  [dbo].[uspCheckSession] 
-					   @ses_id
-					  ,@session_time
-					  --,@login
-					  ,@status = @return_status output
-					
-					
-					if @return_status = 'exist' 
-					begin
-					select 'exist' as answer
-					insert into log.tblApplicationEventLog values (getdate(),'Zalogwanie z sukcesem - Sesja już istaniała',null,@userId)
-					end
-
-					else
-					begin
-						insert into [dbo].[tblSessions] values (@ses_id,@login,getdate(),getdate(),1)
-						select 'ok' as answer
-						--update main_users set bad_login_count = 0 where Login = @login
-						--insert into [dbo].[log_login_to_system] values (getdate(),@login,1)
-						insert into log.tblApplicationEventLog values (getdate(),'Zalogwanie z sukcesem',null,@userId)
-					end
-
-							
-			end
-			
-	else
-	
-	begin 
+	BEGIN TRY
 		
-		if @isActive = 0 
-			begin
-				insert into log.tblApplicationEventLog values (getdate(),'BŁĄD LOGOWANIA - Konto nie aktywne',@login,1)
-			end
-			else
-			begin
-				insert into log.tblApplicationEventLog values (getdate(),'BŁĄD LOGOWANIA',@login,1)
-			end
+		BEGIN TRAN
+					
+			IF @pass_hash = @saved_pass_hash AND @isActive = 1
+				BEGIN
+					/* Weryfikacja czy sesja juz istnieje */					
+					EXEC dbo.uspCheckSession
+						 @ses_id = @ses_id
+						,@session_time = @session_time
+						,@status = @return_status OUTPUT
+								
+					IF @return_status = 'exist' 
+						BEGIN
+						SELECT 'exist' as answer
+					
+						EXEC log.uspAddAppEventLog 
+							@EventMessage = 'Login success (session exists)'
+							,@LoginName = @login
 
-	
-		select 'not' as answer
-	end
-	
+						END
+					ELSE
+						BEGIN
+							INSERT INTO [dbo].[tblSessions] 
+							(
+								ID_SES		
+								,Login		
+								,DateStart	
+								,LastUpdate	
+								,Active
+							)
+							VALUES 
+							(
+								 @ses_id
+								,@login
+								,GETDATE()
+								,GETDATE()
+								,1
+							)
+
+							SELECT 'ok' as answer
+
+							EXEC log.uspAddAppEventLog 
+								@EventMessage = 'Login success'
+								,@LoginName = @login
+						END							
+				END			
+			ELSE
+				BEGIN 					
+					IF @isActive = 0 
+						BEGIN
+							EXEC log.uspAddAppEventLog 
+								@EventMessage = 'Login error'
+								,@ErrorMessage = 'Inactive account'
+								,@LoginName = @login
+						END
+					ELSE
+						BEGIN
+							EXEC log.uspAddAppEventLog 
+								@EventMessage = 'Login error'
+								,@ErrorMessage = 'Incorrect password or login does not exist'
+								,@LoginName = @login
+						END
+						
+					SELECT 'not' as answer
+				END
+				
+		COMMIT
+
+	END TRY
+	BEGIN CATCH
+
+		SET @ReturnValue = -1
+
+		IF @@TRANCOUNT > 0 ROLLBACK TRAN
+  
+		/* raise an error */
+		;THROW
+
+	END CATCH
+
+RETURN @ReturnValue
+
 END
-GO

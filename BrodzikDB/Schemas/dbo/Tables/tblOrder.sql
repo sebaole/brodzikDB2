@@ -6,8 +6,6 @@
 	[OrderDate]              DATETIME NOT NULL  DEFAULT GETDATE(),
 	[DeliveryDate]           DATETIME NOT NULL ,
 	[IsSelfPickup]           BIT NOT NULL ,
-	[TotalPrice]             MONEY NULL ,
-	[TotalPriceWithDiscount] MONEY NULL ,
 	[CustomerNote]           NVARCHAR(256) NULL ,
 	[IsInvoiced]             BIT NOT NULL DEFAULT(0),
 	[DateInvoiced]           DATETIME NULL ,

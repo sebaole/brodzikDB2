@@ -34,6 +34,15 @@ BEGIN
 		BEGIN TRAN
 
 			/* target sql statements here */
+			;WITH CTE_TotalPrice AS
+			(
+				SELECT
+					OrderID
+					,[TotalPrice] = SUM(Quantity * GrossPriceWithDiscount)
+				FROM dbo.tblOrderItem
+				GROUP BY OrderID
+			)
+
 			SELECT 
 				O.OrderID
 				,O.OrderNr
@@ -45,7 +54,7 @@ BEGIN
 				,U.IsBusinessClient
 				,[ClientName] = IIF(U.IsBusinessClient = 1, U.CompanyName, CONCAT(U.LastName,' ',U.FirstName))
 				,U.NIP
-				,[TotalPrice] = O.TotalPriceWithDiscount
+				,[TotalPrice] = TP.TotalPrice
 				,O.IsInvoiced
 				,O.DateInvoiced
 				,O.DeliveryState
@@ -68,6 +77,8 @@ BEGIN
 				ON O.OrderID = OS.OrderID
 			INNER JOIN dbo.tblUser U
 				ON O.UserID = U.UserID
+			LEFT JOIN CTE_TotalPrice TP
+				ON O.OrderID = TP.OrderID
 			WHERE 
 				(U.LoginName = @LoginName OR @LoginName IS NULL)
 				AND (OS.StatusCode = @OrderStatusCode OR @OrderStatusCode IS NULL)

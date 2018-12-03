@@ -8,11 +8,10 @@
 	[UnitPrice]					MONEY NOT NULL ,
 	[VATRate]					DECIMAL(5,4) NOT NULL ,
 	[GrossPriceWithDiscount]	MONEY NOT NULL,
-	[UserDiscountRate]			DECIMAL(5,4) NULL ,
-	[ProductDiscountRate]		DECIMAL(5,4) NULL ,
 	[DateCreated]				DATETIME NOT NULL DEFAULT GETDATE(),
 	[LastUpdated]				DATETIME NULL ,
-	CONSTRAINT [PK_tblOrderItem] PRIMARY KEY CLUSTERED ([OrderItemID] ASC)
+	CONSTRAINT [PK_tblOrderItem] PRIMARY KEY CLUSTERED ([OrderItemID] ASC),
+	CONSTRAINT [UQ_tblOrderItem_OrderID_ProductID] UNIQUE ([OrderID],[ProductID])
 );
 GO
 

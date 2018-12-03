@@ -9,15 +9,11 @@
 	,@DeliveryZipCode			NVARCHAR(6) = NULL
 	,@DeliveryStreet			NVARCHAR(128) = NULL
 	,@DeliveryNumberLine1		NVARCHAR(16) = NULL
-	,@DeliveryNumberLine2		NVARCHAR(16) = NULL
-	,@TotalPrice				MONEY = 0 -- to be removed
-	,@TotalPriceWithDiscount	MONEY = 0 -- to be removed
-	
+	,@DeliveryNumberLine2		NVARCHAR(16) = NULL	
 	,@IsRecurring				BIT = 0
 	,@RecurrenceWeekNumber		TINYINT = NULL
 	,@DateEndRecurrence			DATETIME = NULL
 	,@RecurrenceBaseOrderID		INT = NULL
-
 	,@OrderID					INT OUT
 	,@OrderNr					NVARCHAR(16) OUT
 )
@@ -253,8 +249,6 @@ BEGIN
 				,[OrderNr]                             
 				,[DeliveryDate]           
 				,[IsSelfPickup]           
-				,[TotalPrice]             
-				,[TotalPriceWithDiscount] 
 				,[CustomerNote]                      
 				,[DeliveryCity]           
 				,[DeliveryState]          
@@ -273,8 +267,6 @@ BEGIN
 				,@OrderNr
 				,@DeliveryDate
 				,@IsSelfPickup
-				,@TotalPrice 
-				,@TotalPriceWithDiscount
 				,@CustomerNote
 				,@DeliveryCity
 				,@DeliveryState
@@ -367,9 +359,9 @@ BEGIN
 				 [OrderID]             
 				,[ProductID]           
 				,[ProductName]         
-				,[Quantity]            
-				,[UnitPrice]           
-				,[VATRate]             
+				,[Quantity]  
+				,[UnitPrice]
+				,[VATRate]  
 				,GrossPriceWithDiscount
 			)
 			SELECT
