@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[uspProcessRecurringOrders]
 (
-	 @DeliveryDate	DATETIME
+	  @DeliveryDate			DATETIME
+	 ,@OrdersAddedCount		INT OUT
 )
 AS
 
@@ -28,6 +29,7 @@ BEGIN
 		,@IntCounter					INT
 		,@outOrderID					INT
 		,@outOrderNr					NVARCHAR(16)
+		,@OrderCounter					INT = 0
 
 	BEGIN TRY
 
@@ -138,6 +140,7 @@ BEGIN
 											,@OrderID = @outOrderID OUTPUT
 											,@OrderNr = @outOrderNr OUTPUT
 
+										SET @OrderCounter = @OrderCounter + 1
 								END
 							SET @IntCounter = @IntCounter + 1
 						END
@@ -161,13 +164,16 @@ BEGIN
 			
 		COMMIT
 
-			CLOSE sqlCursorForOrders
-			DEALLOCATE sqlCursorForOrders
-		
+		CLOSE sqlCursorForOrders
+		DEALLOCATE sqlCursorForOrders
+			
+		SET @OrdersAddedCount = @OrderCounter
+
 	END TRY
 	BEGIN CATCH
 
 		SET @ReturnValue = -1
+		SET @OrdersAddedCount = 0
 
 		IF CURSOR_STATUS('local','sqlCursorForOrders') >= -1
 			BEGIN

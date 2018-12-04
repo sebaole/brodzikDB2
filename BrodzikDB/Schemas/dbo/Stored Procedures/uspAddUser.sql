@@ -99,7 +99,7 @@ BEGIN
 				BEGIN
 					UPDATE dbo.tblUser
 					SET
-						 [UserRoleID] = @UserRoleID												
+						 [UserRoleID] = IIF(UserRoleID = 1, UserRoleID, @UserRoleID) -- to prevent for not changing admin into client									
 						,[PhoneNumber] = @PhoneNumber
 						,[Email] = @Email					
 						,[FirstName] = @FirstName				

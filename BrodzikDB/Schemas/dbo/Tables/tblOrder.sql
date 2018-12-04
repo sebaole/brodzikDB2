@@ -26,6 +26,7 @@
 
 	,CONSTRAINT [PK_tblOrder] PRIMARY KEY CLUSTERED ([OrderID] ASC)
 	,CONSTRAINT [UQ_tblOrder_OrderNr] UNIQUE ([OrderNr])
+	,CONSTRAINT [CK_tblOrder_OrderDate_DeliveryDate] CHECK ([DeliveryDate] > [OrderDate])
 	--,CONSTRAINT [UQ_tblOrder_RecurrenceBaseOrderID_DeliveryDate] UNIQUE ([RecurrenceBaseOrderID], [DeliveryDate]) -- safe check for no chance to insert recurring order > 1x
 );
 GO
