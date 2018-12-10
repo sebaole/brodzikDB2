@@ -20,7 +20,7 @@ BEGIN
 
 		IF @StatusCode IS NULL OR @OrderStatusID IS NULL
 			BEGIN
-				RAISERROR ('Incorrect value for @StatusCode = %s', 16, 1, @StatusCode)
+				RAISERROR ('Nieprawidłowa wartość dla parametru @StatusCode = %s', 16, 1, @StatusCode)
 			END
 		
 		BEGIN TRAN

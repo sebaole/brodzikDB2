@@ -16,7 +16,7 @@ BEGIN
 		/* some extra validations here */
 		IF NOT EXISTS (SELECT 1 FROM dbo.tblProduct WHERE ProductID = @ProductID)
 			BEGIN
-				RAISERROR ('ProductID %i does not exist', 16, 1, @ProductID)
+				RAISERROR ('ProductID %i nie istnieje', 16, 1, @ProductID)
 			END
 		
 		BEGIN TRAN

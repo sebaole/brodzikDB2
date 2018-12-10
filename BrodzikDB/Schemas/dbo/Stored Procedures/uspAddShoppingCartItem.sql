@@ -30,18 +30,18 @@ BEGIN
 		SET @ProductName = (SELECT ProductName FROM dbo.tblProduct WHERE ProductID = @ProductID AND IsActive = 1)
 		IF @ProductName IS NULL AND NOT (@IsUpdateOrDelete = 1 AND @Quantity = 0) -- do not check if DELETE is expected (Quantity = 0)
 		BEGIN
-			RAISERROR ('Sorry, product %s is no longer available.', 16, 1, @ProductName) -- change because it's NULL name
+			RAISERROR ('Przepraszamy, produkt %s nie jest już dostępny', 16, 1, @ProductName) -- change because it's NULL name
 		END
 
 		IF TRY_CAST(@DeliveryDate AS DATE) IS NULL
 			BEGIN
-				RAISERROR ('Something wrong with delivery date.', 16, 1)
+				RAISERROR ('Coś nie tak z datą dostawy', 16, 1)
 			END
 
 		-- check delivery date, min. 2 days after today
 		IF CAST(@DeliveryDate AS DATE) < DATEADD(DAY, 2, CAST(GETDATE() AS DATE))
 			BEGIN
-				RAISERROR ('Delivery date must be at least 2 day(s) after today.', 16, 1)
+				RAISERROR ('Data dostawy nie może być mniejsza niż dziś +2 dni', 16, 1)
 			END
 		
 		/******************************************************************************************/
@@ -56,49 +56,49 @@ BEGIN
 			BEGIN
 				IF EXISTS (SELECT 1 FROM dbo.tblProduct P WHERE P.ProductID = @ProductID AND P.IsMonday = 0)
 					BEGIN
-						RAISERROR ('The product you are trying to add to the cart is not available for the delivery date you have selected.', 16, 1)
+						RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 					END
 			END
 		ELSE IF @DeliveryDay = 2
 			BEGIN
 				IF EXISTS (SELECT 1 FROM dbo.tblProduct P WHERE P.ProductID = @ProductID AND P.IsTuesday = 0)
 					BEGIN
-						RAISERROR ('The product you are trying to add to the cart is not available for the delivery date you have selected.', 16, 1)
+						RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 					END
 			END
 		ELSE IF @DeliveryDay = 3
 			BEGIN
 				IF EXISTS (SELECT 1 FROM dbo.tblProduct P WHERE P.ProductID = @ProductID AND P.IsWednesday = 0)
 					BEGIN
-						RAISERROR ('The product you are trying to add to the cart is not available for the delivery date you have selected.', 16, 1)
+						RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 					END
 			END
 		ELSE IF @DeliveryDay = 4
 			BEGIN
 				IF EXISTS (SELECT 1 FROM dbo.tblProduct P WHERE P.ProductID = @ProductID AND P.IsThursday = 0)
 					BEGIN
-						RAISERROR ('The product you are trying to add to the cart is not available for the delivery date you have selected.', 16, 1)
+						RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 					END
 			END
 		ELSE IF @DeliveryDay = 5
 			BEGIN
 				IF EXISTS (SELECT 1 FROM dbo.tblProduct P WHERE P.ProductID = @ProductID AND P.IsFriday = 0)
 					BEGIN
-						RAISERROR ('The product you are trying to add to the cart is not available for the delivery date you have selected.', 16, 1)
+						RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 					END
 			END
 		ELSE IF @DeliveryDay = 6
 			BEGIN
 				IF EXISTS (SELECT 1 FROM dbo.tblProduct P WHERE P.ProductID = @ProductID AND P.IsSaturday = 0)
 					BEGIN
-						RAISERROR ('The product you are trying to add to the cart is not available for the delivery date you have selected.', 16, 1)
+						RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 					END
 			END
 		ELSE IF @DeliveryDay = 7
 			BEGIN
 				IF EXISTS (SELECT 1 FROM dbo.tblProduct P WHERE P.ProductID = @ProductID AND P.IsSunday = 0)
 					BEGIN
-						RAISERROR ('The product you are trying to add to the cart is not available for the delivery date you have selected.', 16, 1)
+						RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 					END
 			END
 		END

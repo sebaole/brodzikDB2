@@ -24,10 +24,13 @@ BEGIN
 	SET	XACT_ABORT, NOCOUNT ON
 
 	DECLARE 
-		@ReturnValue	SMALLINT = 0
-		,@OrderCount	INT = 0
-		,@UserID		INT
-		,@DeliveryDay	TINYINT
+		@ReturnValue				SMALLINT = 0
+		,@OrderCount				INT = 0
+		,@UserID					INT
+		,@DeliveryDay				TINYINT
+		,@ContactPersonFirstName	NVARCHAR(150)
+		,@ContactPersonLastName		NVARCHAR(150)
+		,@ContactPhoneNumber		NVARCHAR(32)
 
 	SET @UserID = (SELECT UserID FROM dbo.tblUser WHERE LoginName = @LoginName)
 
@@ -62,7 +65,8 @@ BEGIN
 									AND DateExpired >= GETDATE()
 								)
 					BEGIN
-						RAISERROR ('ShoppingCart on the selected delivery date has expired. There is no item(s) inside.', 16, 1)
+						--RAISERROR ('ShoppingCart on the selected delivery date has expired. There is no item(s) inside.', 16, 1)
+						RAISERROR ('Upłynął termin ważności koszyka dla wybranej daty dostawy. Koszyk jest pusty', 16, 1)
 					END
 			END
 		
@@ -71,12 +75,12 @@ BEGIN
 		/******************************************************************************************/
 		IF @IsRecurring = 1 AND (@RecurrenceWeekNumber IS NULL OR @DateEndRecurrence IS NULL)
 			BEGIN
-				RAISERROR('Insufficient number of parameters for recurring orders.', 16, 1)
+				RAISERROR('Niewystarczająca liczba parametrów dla zamówienia cyklicznego', 16, 1)
 			END
 
 		IF @RecurrenceBaseOrderID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.tblOrder WHERE OrderID = @RecurrenceBaseOrderID AND IsRecurring = 1)
 			BEGIN
-				RAISERROR('OrderID %i does not exist or it is not recurring order.', 16, 1, @RecurrenceBaseOrderID)
+				RAISERROR('OrderID %i nie istnieje lub nie jest to zamówienie cykliczne', 16, 1, @RecurrenceBaseOrderID)
 			END
 
 		/******************************************************************************************/
@@ -92,7 +96,23 @@ BEGIN
 					OR @DeliveryNumberLine2 IS NULL
 				)
 			BEGIN
-				RAISERROR ('Not all address data has been entered.', 16, 1)
+				RAISERROR ('Niewystarczająca liczba parametrów dotyczących adresu dla opcji DOSTAWA', 16, 1)
+			END
+
+		IF @IsSelfPickup = 0
+			BEGIN
+				/* workaround to store historical contact person details */
+				SELECT TOP 1
+					@ContactPersonFirstName = ContactPersonFirstName
+					,@ContactPersonLastName = ContactPersonLastName
+					,@ContactPhoneNumber = ContactPhoneNumber
+				FROM dbo.tblAddress
+				WHERE 
+					UserID = @UserID
+					AND City = @DeliveryCity
+					AND ZipCode = @DeliveryZipCode
+					AND Street = @DeliveryStreet
+					AND NumberLine1 = @DeliveryNumberLine1
 			END
 		
 		/******************************************************************************************/
@@ -100,7 +120,7 @@ BEGIN
 		/******************************************************************************************/
 		IF TRY_CAST(@DeliveryDate AS DATE) IS NULL
 			BEGIN
-				RAISERROR ('Something wrong with delivery date.', 16, 1)
+				RAISERROR ('Coś nie tak z datą dostawy', 16, 1)
 			END
 
 		/******************************************************************************************/
@@ -108,7 +128,7 @@ BEGIN
 		/******************************************************************************************/
 		IF CAST(@DeliveryDate AS DATE) < DATEADD(DAY, 2, CAST(GETDATE() AS DATE))
 			BEGIN
-				RAISERROR ('Delivery date must be at least 2 day(s) after today.', 16, 1)
+				RAISERROR ('Data dostawy nie może być mniejsza niż dziś +2 dni', 16, 1)
 			END
 
 		/******************************************************************************************/
@@ -132,7 +152,7 @@ BEGIN
 										AND SC.DeliveryDate = @DeliveryDate
 									)
 									BEGIN
-										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+										RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 									END
 					END
 				ELSE IF @DeliveryDay = 2
@@ -148,7 +168,7 @@ BEGIN
 										AND SC.DeliveryDate = @DeliveryDate
 									)
 									BEGIN
-										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+										RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 									END
 					END
 				ELSE IF @DeliveryDay = 3
@@ -164,7 +184,7 @@ BEGIN
 										AND SC.DeliveryDate = @DeliveryDate
 									)
 									BEGIN
-										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+										RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 									END
 					END
 				ELSE IF @DeliveryDay = 4
@@ -180,7 +200,7 @@ BEGIN
 										AND SC.DeliveryDate = @DeliveryDate
 									)
 									BEGIN
-										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+										RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 									END
 					END
 				ELSE IF @DeliveryDay = 5
@@ -196,7 +216,7 @@ BEGIN
 										AND SC.DeliveryDate = @DeliveryDate
 									)
 									BEGIN
-										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+										RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 									END
 					END
 				ELSE IF @DeliveryDay = 6
@@ -212,7 +232,7 @@ BEGIN
 										AND SC.DeliveryDate = @DeliveryDate
 									)
 									BEGIN
-										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+										RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 									END
 					END
 				ELSE IF @DeliveryDay = 7
@@ -228,7 +248,7 @@ BEGIN
 										AND SC.DeliveryDate = @DeliveryDate
 									)
 									BEGIN
-										RAISERROR ('One of your product is not available for the delivery date you have selected.', 16, 1)
+										RAISERROR ('Jeden z twoich produktów nie jest już dostępny na wskazany dzień dostawy', 16, 1)
 									END
 					END
 			END
@@ -260,6 +280,9 @@ BEGIN
 				,[RecurrenceWeekNumber]		
 				,[DateEndRecurrence]
 				,[RecurrenceBaseOrderID]
+				,[ContactPersonFirstName]
+				,[ContactPersonLastName]
+				,[ContactPhoneNumber]
 			)
 			VALUES
 			(
@@ -278,6 +301,9 @@ BEGIN
 				,@RecurrenceWeekNumber	
 				,@DateEndRecurrence		
 				,@RecurrenceBaseOrderID
+				,@ContactPersonFirstName
+				,@ContactPersonLastName
+				,@ContactPhoneNumber
 			)
 
 			SET @OrderID = SCOPE_IDENTITY()

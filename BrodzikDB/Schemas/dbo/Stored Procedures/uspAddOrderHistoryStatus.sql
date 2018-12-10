@@ -26,18 +26,18 @@ BEGIN
 
 		IF @StatusCode IS NULL OR @OrderStatusID IS NULL
 			BEGIN
-				RAISERROR ('Incorrect value for @StatusCode = %s', 16, 1, @StatusCode)
+				RAISERROR ('Nieprawidłowa wartość dla parametru @StatusCode = %s', 16, 1, @StatusCode)
 			END
 
 		/* not able to set the lower state */
 		IF  @NewStatusSortOrder <= @CurrentStatusSortOrder
 			BEGIN
-				RAISERROR ('The status you are trying to set is less or equal than the current one', 16, 1)
+				RAISERROR ('Nie można cofnąć statusu zamówienia', 16, 1)
 			END
 
 		IF @CurrentStatusCode = 'REJECTED'
 			BEGIN
-				RAISERROR ('You can not modify the status of rejected order', 16, 1)
+				RAISERROR ('Nie można modyfikować zamówienia w statusie ODRZUCONE', 16, 1)
 			END
 			
 		BEGIN TRAN

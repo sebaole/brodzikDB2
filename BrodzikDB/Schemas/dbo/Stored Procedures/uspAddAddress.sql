@@ -33,12 +33,12 @@ BEGIN
 		/* some extra validations here */
 		IF @AddressID IS NOT NULL AND (@UserIDAddressID IS NULL OR @UserID IS NULL)
 		BEGIN
-			RAISERROR('LoginName or AddressID you passed does not exist', 16, 1)
+			RAISERROR('LoginName lub AddressID nie istnieje', 16, 1)
 		END
 
 		IF @AddressID IS NOT NULL AND @UserIDAddressID <> @UserID
 		BEGIN
-			RAISERROR('AddressID does not match LoginName you passed', 16, 1)
+			RAISERROR('AddressID nie pasuje do LoginName', 16, 1)
 		END
 
 		BEGIN TRAN

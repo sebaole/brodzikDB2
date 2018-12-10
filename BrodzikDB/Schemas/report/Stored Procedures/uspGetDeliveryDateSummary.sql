@@ -20,12 +20,18 @@ BEGIN
 			/* target sql statements here */
 			SELECT 
 				O.DeliveryDate
-				,[OrderCount] = COUNT(DISTINCT O.OrderID) 
+				,[OrderCount] = COUNT(1) 
 				,[SelfPickupCount] = SUM(IIF(O.IsSelfPickup = 1, 1, 0))
 				,[DeliveryCount] = SUM(IIF(O.IsSelfPickup = 0, 1, 0))
-				,[TotalPrice] = SUM(OI.GrossPriceWithDiscount)
+				,[TotalPrice] = SUM(OI.TotalPrice)
 			FROM dbo.tblOrder O
-			INNER JOIN dbo.tblOrderItem OI
+			INNER JOIN (
+						SELECT 
+							OrderID
+							,[TotalPrice] = SUM(GrossPriceWithDiscount) 
+						FROM dbo.tblOrderItem 
+						GROUP BY OrderID
+						) OI
 				ON O.OrderID = OI.OrderID
 			WHERE (O.DeliveryDate = @DeliveryDate OR @DeliveryDate IS NULL)
 			GROUP BY O.DeliveryDate 

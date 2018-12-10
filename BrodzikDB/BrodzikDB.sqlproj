@@ -138,6 +138,8 @@
     <Build Include="Schemas\dict\Tables\tblCustomParam.sql" />
     <Build Include="Schemas\report\Stored Procedures\uspGetDeliveryDateSummary.sql" />
     <Build Include="Schemas\report\Stored Procedures\uspGetDeliveryDateDetails.sql" />
+    <Build Include="Schemas\report\Stored Procedures\uspGetDeliveryAddress.sql" />
+    <Build Include="Schemas\dbo\Stored Procedures\uspDeleteUser.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />
@@ -151,5 +153,6 @@
     <None Include="Scripts\Post-Deployment\DropForeignKeys.sql" />
     <None Include="Scripts\Post-Deployment\PopulateDictTables.sql" />
     <None Include="Scripts\Post-Deployment\AddForeignKeys.sql" />
+    <None Include="Scripts\Post-Deployment\PopulateClientData.sql" />
   </ItemGroup>
 </Project>

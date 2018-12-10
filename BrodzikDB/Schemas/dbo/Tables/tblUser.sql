@@ -2,7 +2,7 @@
 (
 	 [UserID]					INT IDENTITY (1,1) NOT NULL 
 	,[UserRoleID]				TINYINT NOT NULL 
-	,[LoginName]				NCHAR(9) NOT NULL 
+	,[LoginName]				NCHAR(9) NOT NULL
 	,[PasswordHash]				NVARCHAR(128) NOT NULL 
 	,[PasswordSalt]				NVARCHAR(128) NOT NULL 
 	,[PhoneNumber]				NCHAR(9) NOT NULL 
@@ -21,9 +21,12 @@
 	,[DateCreated]				DATETIME NOT NULL  DEFAULT GETDATE()
 	,[LastUpdated]				DATETIME NULL 
 	,CONSTRAINT [PK_tblUserLogin] PRIMARY KEY CLUSTERED ([UserID] ASC)
-	,CONSTRAINT [UQ_tblUser_LoginName] UNIQUE ([LoginName])
+	--,CONSTRAINT [UQ_tblUser_LoginName] UNIQUE ([LoginName])
 	
 );
+GO
+
+CREATE UNIQUE INDEX UQ_IX_tblUser_LoginName ON [dbo].[tblUser]([LoginName]) WHERE [LoginName] <> 'XXXXXXXXX'
 GO
 
 CREATE TRIGGER [dbo].[trgUser] ON [dbo].[tblUser]

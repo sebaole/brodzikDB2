@@ -21,7 +21,7 @@ BEGIN
 		/* some extra validations here */
 		IF @IsRecurring = 1 AND (@RecurrenceWeekNumber IS NULL OR @DateEndRecurring IS NULL)
 			BEGIN
-				RAISERROR('Insufficient number of parameters for recurring orders', 16, 1)
+				RAISERROR('Niewystarczająca liczba parametrów dla zamówienia cyklicznego', 16, 1)
 			END
 		
 		BEGIN TRAN

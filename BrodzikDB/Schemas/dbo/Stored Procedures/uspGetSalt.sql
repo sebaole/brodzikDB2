@@ -27,7 +27,7 @@ BEGIN
 
 			IF @PasswordSalt IS NULL
 			BEGIN
-				RAISERROR('Invalid LoginName', 16, 1)
+				RAISERROR('Nieprawidłowy Login', 16, 1)
 			END
 		
 		COMMIT

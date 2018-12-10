@@ -19,17 +19,17 @@ BEGIN
 		/* some extra validations here */
 		IF @Quantity IS NULL AND @GrossPriceWithDiscount IS NULL
 			BEGIN
-				RAISERROR ('You must provide at least 1 parameter to update', 16, 1)
+				RAISERROR ('Musisz podać przynajmniej 1 parametr do zaktualizowania', 16, 1)
 			END
 
 		IF @Quantity < 0 OR @GrossPriceWithDiscount < 0
 			BEGIN
-				RAISERROR ('Incorrect value(s) for input parameter(s)', 16, 1)
+				RAISERROR ('Podane wartości są nielogiczne', 16, 1)
 			END
 
 		IF @Quantity = 0 AND (SELECT COUNT([ProductID]) FROM dbo.tblOrderItem WHERE OrderID = @OrderID) = 1
 			BEGIN
-				RAISERROR ('You cannot delete the last product from the order', 16, 1)
+				RAISERROR ('Nie możesz usunąć wszystkich produktów z zamówienia', 16, 1)
 			END
 	
 		BEGIN TRAN

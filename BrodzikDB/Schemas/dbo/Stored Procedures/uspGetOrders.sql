@@ -28,7 +28,7 @@ BEGIN
 		/* some extra validations here */
 		IF NOT EXISTS (SELECT 1 FROM dict.tblOrderStatus WHERE StatusCode = @OrderStatusCode) AND @OrderStatusCode IS NOT NULL
 			BEGIN
-				RAISERROR ('Incorrect value for @OrderStatusCode = %s', 16, 1, @OrderStatusCode)
+				RAISERROR ('Nieprawidłowa wartość dla parametru @OrderStatusCode = %s', 16, 1, @OrderStatusCode)
 			END
 		
 		BEGIN TRAN

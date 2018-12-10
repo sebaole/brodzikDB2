@@ -22,17 +22,17 @@ BEGIN
 		/* some extra validations here */
 		IF NOT EXISTS (SELECT 1 FROM dict.tblProductCategory WHERE CategoryName = @CategoryName) AND @CategoryName IS NOT NULL
 			BEGIN
-				RAISERROR('The CategoryName %s does not exist', 16, 1, @CategoryName)
+				RAISERROR('CategoryName %s nie istnieje', 16, 1, @CategoryName)
 			END
 
 		IF NOT EXISTS (SELECT 1 FROM dbo.tblUser WHERE LoginName = @LoginName) AND @LoginName IS NOT NULL
 			BEGIN
-				RAISERROR('The LoginName %s does not exist', 16, 1, @LoginName)
+				RAISERROR('Login %s nie istnieje', 16, 1, @LoginName)
 			END
 
 		IF TRY_CAST(@DeliveryDate AS DATE) IS NULL AND @DeliveryDate IS NOT NULL
 			BEGIN
-				RAISERROR ('Something wrong with delivery date', 16, 1)
+				RAISERROR ('Coś nie tak z datą dostawy', 16, 1)
 			END
 
 		BEGIN TRAN

@@ -15,7 +15,9 @@
 	[DeliveryStreet]         NVARCHAR(128) NULL ,
 	[DeliveryNumberLine1]    NVARCHAR(16) NULL ,
 	[DeliveryNumberLine2]    NVARCHAR(16) NULL,
-	
+	[ContactPersonFirstName] NVARCHAR(150) NULL ,
+	[ContactPersonLastName]  NVARCHAR(150) NULL ,
+	[ContactPhoneNumber]     NVARCHAR(32) NULL ,	
 	[IsRecurring]			 BIT NOT NULL DEFAULT(0),
 	[RecurrenceWeekNumber]	 TINYINT NULL,
 	[DateEndRecurrence]		 DATETIME NULL,

@@ -28,7 +28,7 @@ BEGIN
 
 			IF @@ROWCOUNT = 0
 			BEGIN
-				RAISERROR('Invalid LoginName' ,16 ,1)
+				RAISERROR('Nieprawidłowy Login' ,16 ,1)
 			END
 		
 		COMMIT

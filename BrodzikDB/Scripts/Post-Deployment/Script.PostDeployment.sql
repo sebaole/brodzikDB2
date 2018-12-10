@@ -23,6 +23,9 @@ PRINT N'Start DropForeignKeys.sql'
 PRINT N'Start PopulateDictTables.sql'
 :r .\PopulateDictTables.sql
 
+PRINT N'Start PopulateClientData.sql'
+:r .\PopulateClientData.sql
+
 PRINT N'Start AddForeignKeys.sql'
 :r .\AddForeignKeys.sql
 

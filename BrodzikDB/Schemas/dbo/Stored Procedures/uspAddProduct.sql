@@ -39,12 +39,12 @@ BEGIN
 
 		IF @CategoryID IS NULL
 			BEGIN
-				RAISERROR ('Incorrect value for @CategoryName = %s', 16, 1, @CategoryName)
+				RAISERROR ('Nieprawidłowa wartość dla parametru @CategoryName = %s', 16, 1, @CategoryName)
 			END
 
 		IF @VATID IS NULL
 			BEGIN
-				RAISERROR ('Incorrect VATRate', 16, 1)
+				RAISERROR ('Nieprawidłowa wartość dla parametru @VATRate', 16, 1)
 				--RAISERROR ('Incorrect value for @VATRate = %f', 16, 1, @VATRate)
 			END
 		

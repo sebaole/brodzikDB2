@@ -16,7 +16,7 @@ BEGIN
 		/* some extra validations here */
 		IF NOT EXISTS (SELECT 1 FROM dbo.tblOrder WHERE OrderNr = @OrderNr)
 			BEGIN
-				RAISERROR ('Order Number %s does not exist', 16, 1, @OrderNr)
+				RAISERROR ('Zamówienie nr %s nie istnieje', 16, 1, @OrderNr)
 			END
 		
 		BEGIN TRAN

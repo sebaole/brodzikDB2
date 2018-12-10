@@ -33,19 +33,19 @@ BEGIN
 
 		IF EXISTS (SELECT 1 FROM dbo.tblUser WHERE LoginName = @LoginName) AND @UserID IS NULL -- do not check if update is calling
 			BEGIN
-				RAISERROR ('The LoginName already exists. Please use a different LoginName', 16, 1)
+				RAISERROR ('Ten Login już istnieje. Proszę użyć innego', 16, 1)
 			END
 
 		IF @UserID IS NOT NULL AND (NOT EXISTS (SELECT 1 FROM dbo.tblUser WHERE UserID = @UserID) OR (SELECT LoginName FROM dbo.tblUser WHERE UserID = @UserID) <> @LoginName)
 			BEGIN
-				RAISERROR ('The LoginName does not match UserID', 16, 1)
+				RAISERROR ('Login jest inny niż wskazuje na to UserID', 16, 1)
 			END
 		
 		SET @UserRoleID	= (SELECT UserRoleID FROM dict.tblUserRole WHERE UserRoleName = @UserRoleName)
 
 		IF @UserRoleID IS NULL
 			BEGIN
-				RAISERROR ('There is no corresponding value in DB for @UserRoleName = %s', 16, 1, @UserRoleName)
+				RAISERROR ('Nieprawidłowa wartość dla parametru @UserRoleName = %s', 16, 1, @UserRoleName)
 			END
 		
 		BEGIN TRAN
